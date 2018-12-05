@@ -11,7 +11,7 @@
             <md-card-content>
                 <md-field>
                     <label>Files</label>
-                    <md-select v-model="selected_file" id="_file" name="_file">
+                    <md-select v-model="selected_file" id="_file" name="_file" @md-selected="selectFile()">
                         <md-option v-for="measure in measures" v-bind:value="measure">{{measure}}</md-option>
                     </md-select>
                 </md-field>
@@ -36,7 +36,7 @@
             </md-card-content>
         </md-card>
         <br>
-        <md-card>
+        <md-card v-if="url.length>0">
             <md-card-header>
                 <div class="md-title">Treatment</div>
             </md-card-header>
@@ -47,6 +47,8 @@
                             <div class="md-layout-item">
                                 <md-field>
                                     <md-select v-model="treatment" @md-selected="showParameters()">
+                                        <md-option value="NOTREATMENT::::">NOTREATMENT</md-option>
+
                                         <md-option value="HDBSCAN::min_samples=2 min_cluster_size=3 alpha=0.5::https://hdbscan.readthedocs.io/en/latest/parameter_selection.html#">
                                             HDBSCAN
                                         </md-option>
@@ -63,13 +65,12 @@
                                             MEANSHIFT
                                         </md-option>
 
-                                        <md-option value="NOTREATMENT::::">NOTREATMENT</md-option>
                                     </md-select>
                                 </md-field>
                             </div>
                             <div class="md-layout-item">
-                                <md-button class="md-raised md-primary">Execute</md-button>
-                                <md-button class="md-raised md-primary">Fullscreen</md-button>
+                                <md-button class="md-raised md-primary" @click="openIn(showLink(),'out')">Execute</md-button>
+                                <md-button class="md-raised md-primary" @click="openIn(showLink())">Fullscreen</md-button>
                             </div>
                         </div>
 
@@ -91,8 +92,9 @@
                 </md-tabs>
             </md-card-content>
         </md-card>
-        <md-card>
-            <md-card-header>Affichage</md-card-header>
+        <br>
+        <md-card v-if="url.length>0">
+            <md-card-header><div class="md-title">Print</div></md-card-header>
             <md-card-content>
                 <md-field>
                     <label>Nb View</label>
@@ -125,7 +127,7 @@ export default class Files extends Vue {
     file_public:any={};
     file_private:any={};
     url:string="";
-    treatment:string="";
+    treatment:string="NOTREATMENT::::";
     params: any[]=[];
     notif:string="";
     algo:string="";
@@ -138,22 +140,31 @@ export default class Files extends Vue {
       HTTP.get('/datas/measures')
           .then(response => {
               this.measures = response.data;
+              //if(this.measures.length>0)this.selected_file=this.measures[0];
           })
           .catch(e => {});
     }
 
-    showLink(){
+    selectFile(){
+      this.url=this.selected_file;
+    }
 
+    showLink(){
+      debugger
         var url_file=this.url;
         if(this.url.startsWith("http"))
             url_file="b64="+btoa(this.url);
 
         var sParam="";
-        this.params.forEach(p=>{sParam=sParam+p.label+"="+p.value+"&";});
+        this.params.forEach((p)=>{
+            if(p.label!=null && p.label.length>0)
+                sParam=sParam+p.label+"="+p.value+"&";
+        });
 
-        let rc="http://"+document.location.host+"job/"+url_file+"/"+this.algo+"/"+sParam+"?&pca="+this.pca;
+        var baseURL="http://localhost:5000";
+        let rc="http://"+baseURL+"/job/"+url_file+"/"+this.algo+"/"+sParam+"?&pca="+this.pca;
         if(url_file.endsWith(".gml") || url_file.endsWith(".gexf") || url_file.endsWith(".gephi") || url_file.endsWith(".graphml")){
-            rc="http://"+document.location.host+"graph/"+url_file+"/fr?algo_comm=gn";
+            rc="http://"+baseURL+"/graph/"+url_file+"/fr?algo_comm=gn";
         }
 
         //Ajout d'options supplémentaire sur l'url
@@ -189,6 +200,10 @@ export default class Files extends Vue {
         var doc=this.treatment.split("::")[2];
 
         if(this.algo=="NEURALGAS" && this.notif=="")this.notif="dev@f80.fr";
+    }
+
+    openIn(url:string,target="_blank"){
+      window.open(url,target);
     }
 
     upload(type:boolean){
