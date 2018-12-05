@@ -8,7 +8,8 @@ if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
     baseURL = 'http://socketserver.shifumix.com:5000/'
 }
 
-export const HTTP = axios.create(
-{
+export const HTTP = axios.create({
         baseURL: baseURL
-})
+});
+
+export const ROOT_API=baseURL;

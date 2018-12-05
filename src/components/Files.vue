@@ -3,130 +3,163 @@
       <h1 >3DH</h1>
       3D representation & Data analysis<br><br>
 
-    <div class="md-alignment-top-center">
-        <md-card>
-            <md-card-header>
-                <div class="md-title">Files</div>
-            </md-card-header>
-            <md-card-content>
-                <md-field>
-                    <label>Files</label>
-                    <md-select v-model="selected_file" id="_file" name="_file" @md-selected="selectFile()">
-                        <md-option v-for="measure in measures" v-bind:value="measure">{{measure}}</md-option>
-                    </md-select>
-                </md-field>
+      <div class="md-layout md-gutter md-alignment-top">
+          <div class="md-layout-item md-medium-size-33 md-small-size-50 md-xsmall-size-100">
+              <div class="md-alignment-top-center">
+                  <md-card>
+                      <md-card-header>
+                          <div class="md-layout">
+                              <div class="md-layout-item"><div class="md-title" style="text-align: left;">Datas / Files</div></div>
+                              <div class="md-layout-item" style="text-align: right;">
+                                  <md-button class="md-raised md-primary" @click="selectFile(true)">Random</md-button>
+                              </div>
+                          </div>
 
-                <div class="md-layout md-gutter">
-                    <div class="md-layout-item">
-                        <md-field><label>Public</label><md-file v-model="file_public" @change="upload(true)"/></md-field>
-                    </div>
-                    <div class="md-layout-item">
-                        <md-field><label>Private</label><md-file v-model="file_private" @change="upload(false)"/></md-field>
-                    </div>
-                </div>
-                <br>
+                      </md-card-header>
+                      <md-card-content>
+                          <md-field>
+                              <label>Files</label>
+                              <md-select v-model="selected_file" id="_file" name="_file" @md-selected="selectFile()">
+                                  <md-option v-for="measure in measures" v-bind:value="measure">{{measure}}</md-option>
+                              </md-select>
+                          </md-field>
 
-                <md-field>
-                    <label>URL File</label>
-                    <md-input type="text" v-model="url"></md-input>
-                    <span class="md-helper-text">Get the url of the file to compute</span>
-                </md-field>
+                          <div class="md-layout">
+                              <div class="md-layout-item">
+                                  <label class="md-button md-primary md-alignment-center" for="_public_file"><md-icon>backup</md-icon>&nbsp;&nbsp;Public</label>
+                                  <md-file style="visibility: hidden" id="_public_file" @md-change="upload($event,true)"/>
+                              </div>
+                              <div class="md-layout-item">
+                                  <label class="md-button md-primary" for="_private_file"><md-icon>backup</md-icon>&nbsp;&nbsp;Private</label>
+                                  <md-file style="visibility: hidden" id="_private_file" @md-change="upload($event,false)"/>
+                              </div>
+                          </div>
 
-
-            </md-card-content>
-        </md-card>
-        <br>
-        <md-card v-if="url.length>0">
-            <md-card-header>
-                <div class="md-title">Treatment</div>
-            </md-card-header>
-            <md-card-content>
-                <md-tabs md-sync-route>
-                    <md-tab id="tab-home" md-label="Clustering" to="/components/tabs/Clustering">
-                        <div class="md-layout md-gutter">
-                            <div class="md-layout-item">
-                                <md-field>
-                                    <md-select v-model="treatment" @md-selected="showParameters()">
-                                        <md-option value="NOTREATMENT::::">NOTREATMENT</md-option>
-
-                                        <md-option value="HDBSCAN::min_samples=2 min_cluster_size=3 alpha=0.5::https://hdbscan.readthedocs.io/en/latest/parameter_selection.html#">
-                                            HDBSCAN
-                                        </md-option>
-
-                                        <md-option value="NEURALGAS::passes=3 distance_toremove_edge=40::https://en.wikipedia.org/wiki/Neural_gas">
-                                            NEURALGAS
-                                        </md-option>
-
-                                        <md-option value="HAC::n_clusters=11,12,13::http://scikit-learn.org/stable/modules/generated/sklearn.cluster.AgglomerativeClustering.html">
-                                            HAC
-                                        </md-option>
-
-                                        <md-option value="MEANSHIFT::bandwidth=0.1,0.3,0.2::http://scikit-learn.org/stable/modules/generated/sklearn.cluster.MeanShift.html">
-                                            MEANSHIFT
-                                        </md-option>
-
-                                    </md-select>
-                                </md-field>
-                            </div>
-                            <div class="md-layout-item">
-                                <md-button class="md-raised md-primary" @click="openIn(showLink(),'out')">Execute</md-button>
-                                <md-button class="md-raised md-primary" @click="openIn(showLink())">Fullscreen</md-button>
-                            </div>
-                        </div>
+                          <md-field>
+                              <label>URL File</label>
+                              <md-input type="text" v-model="url"></md-input>
+                              <span class="md-helper-text">Get the url of the file to compute</span>
+                          </md-field>
 
 
+                      </md-card-content>
+                  </md-card>
+                  <br>
+                  <md-card v-if="url.length>0">
+                      <md-card-header>
+                          <div class="md-layout">
+                              <div class="md-layout-item"><div class="md-title" style="text-align: left;">Treatment</div></div>
+                              <div class="md-layout-item" style="text-align: right;">
+                                  <md-button class="md-raised md-primary" @click="openIn(showLink({notext:true,nometric:true,add_property:false,autorotate:true}),'out')">Execute</md-button>
+                              </div>
+                          </div>
 
-                        <div class="md-layout md-gutter md-alignment-center">
-                            <div v-for="param in params" class="md-layout-item md-medium-size-33 md-small-size-50 md-xsmall-size-100">
-                                <md-field>
-                                    <label>{{param.label}}</label>
-                                    <md-input type="text" v-model="param.value"></md-input>
-                                </md-field>
-                            </div>
-                        </div>
+                      </md-card-header>
+                      <md-card-content>
+                          <md-tabs md-sync-route>
+                              <md-tab id="tab-home" md-label="Clustering" to="/components/tabs/Clustering">
+                                  <div class="md-layout md-gutter">
+                                      <div class="md-layout-item">
+                                          <md-field>
+                                              <md-select v-model="treatment" @md-selected="showParameters()">
+                                                  <md-option value="NOTREATMENT::::">NOTREATMENT</md-option>
 
-                    </md-tab>
-                    <md-tab id="tab-pages" md-label="Graphes" to="/components/tabs/graphes">
+                                                  <md-option value="HDBSCAN::min_samples=2 min_cluster_size=3 alpha=0.5::https://hdbscan.readthedocs.io/en/latest/parameter_selection.html#">
+                                                      HDBSCAN
+                                                  </md-option>
 
-                    </md-tab>
-                </md-tabs>
-            </md-card-content>
-        </md-card>
-        <br>
-        <md-card v-if="url.length>0">
-            <md-card-header><div class="md-title">Print</div></md-card-header>
-            <md-card-content>
-                <md-field>
-                    <label>Nb View</label>
-                    <md-input type="number" v-model="pca"></md-input>
-                </md-field>
-                <br>
-                <div class="md-layout md-gutter">
-                    <div class="md-layout-item"><md-checkbox v-model="notext" value="1">No text</md-checkbox></div>
-                    <div class="md-layout-item"><md-checkbox v-model="nometrics" value="1">No metrics</md-checkbox></div>
-                    <div class="md-layout-item"><md-checkbox v-model="add_property" value="1">Add Property</md-checkbox></div>
-                </div>
-            </md-card-content>
-        </md-card>
+                                                  <md-option value="NEURALGAS::passes=3 distance_toremove_edge=40::https://en.wikipedia.org/wiki/Neural_gas">
+                                                      NEURALGAS
+                                                  </md-option>
 
-    </div>
+                                                  <md-option value="HAC::n_clusters=11,12,13::http://scikit-learn.org/stable/modules/generated/sklearn.cluster.AgglomerativeClustering.html">
+                                                      HAC
+                                                  </md-option>
 
+                                                  <md-option value="MEANSHIFT::bandwidth=0.1,0.3,0.2::http://scikit-learn.org/stable/modules/generated/sklearn.cluster.MeanShift.html">
+                                                      MEANSHIFT
+                                                  </md-option>
+
+                                              </md-select>
+                                          </md-field>
+                                      </div>
+                                  </div>
+
+
+
+                                  <div v-if="params.length>0" class="md-layout md-gutter md-alignment-center">
+                                      <div v-for="param in params" class="md-layout-item md-medium-size-33 md-small-size-50 md-xsmall-size-100">
+                                          <md-field>
+                                              <label>{{param.label}}</label>
+                                              <md-input type="text" v-model="param.value"></md-input>
+                                          </md-field>
+                                      </div>
+                                  </div>
+
+                              </md-tab>
+                              <md-tab id="tab-pages" md-label="Graphes" to="/components/tabs/graphes">
+
+                              </md-tab>
+                          </md-tabs>
+                      </md-card-content>
+                  </md-card>
+                  <br>
+                  <md-card v-if="url.length>0">
+                      <md-card-header>
+                          <div class="md-layout">
+                              <div class="md-layout-item"><div class="md-title" style="text-align: left;">Print</div></div>
+                              <div class="md-layout-item" style="text-align: right;"><md-button class="md-raised md-primary" @click="openIn(showLink())">Fullscreen</md-button></div>
+                          </div>
+                      </md-card-header>
+                      <md-card-content>
+                          <div class="md-layout md-gutter">
+                              <div class="md-layout-item">
+                                  <md-field>
+                                      <label>Nb View</label>
+                                      <md-input type="number" v-model="pca"></md-input>
+                                  </md-field>
+                              </div>
+                              <div class="md-layout-item">
+                                  <md-field>
+                                      <label>Limit</label>
+                                      <md-input type="number" v-model="limit"></md-input>
+                                  </md-field>
+                              </div>
+                          </div>
+                          <div class="md-layout md-gutter">
+                              <div class="md-layout-item"><md-checkbox v-model="notext" value="1">No text</md-checkbox></div>
+                              <div class="md-layout-item"><md-checkbox v-model="nometrics" value="1">No metrics</md-checkbox></div>
+                              <div class="md-layout-item"><md-checkbox v-model="add_property" value="1">Add Property</md-checkbox></div>
+                              <div class="md-layout-item"><md-checkbox v-model="autorotate" value="2">Rotate</md-checkbox></div>
+                          </div>
+
+                      </md-card-content>
+                  </md-card>
+
+
+
+              </div>
+          </div>
+
+          <div class="md-layout-item md-medium-size-33 md-small-size-50 md-xsmall-size-100">
+              <iframe style="padding:10px;background-color:lightgrey;border: none;min-height: 800px;" width="100%" height="1000" id="doc" name="out"></iframe>
+          </div>
+      </div>
 
   </div>
 </template>
 
 <script lang="ts">
 
-import {HTTP} from '../http-constants'
+import {HTTP,ROOT_API} from '../http-constants'
 import { Component, Vue } from 'vue-property-decorator';
 
 @Component
 export default class Files extends Vue {
     selected_file="";
     measures:string[]=[];
-    file_public:any={};
-    file_private:any={};
     url:string="";
+    limit:number=1000000;
     treatment:string="NOTREATMENT::::";
     params: any[]=[];
     notif:string="";
@@ -134,37 +167,51 @@ export default class Files extends Vue {
     notext:number=1;
     nometrics:number=1;
     add_property:number=1;
+    autorotate:number=2;
     pca:number=1;
 
   mounted(){
       HTTP.get('/datas/measures')
           .then(response => {
-              this.measures = response.data;
+              this.measures = [];
+              response.data.forEach((m:string)=>{
+                  if(!m.startsWith("temp"))
+                      this.measures.push(m);
+              })
               //if(this.measures.length>0)this.selected_file=this.measures[0];
           })
           .catch(e => {});
     }
 
-    selectFile(){
+    selectFile(random=false){
+      if(random && this.measures.length>0){
+          var i=Math.trunc(Math.random()*this.measures.length);
+          this.selected_file=this.measures[i];
+      }
       this.url=this.selected_file;
+      if(this.url.length>0){
+          this.openIn(document.location.host+"/waiting_treatment.html","out");
+          setTimeout(()=>{
+              this.openIn(this.showLink({notext:true,nometrics:true,autorotate:true,add_property:true,limit:300}),"out");
+          },100);
+      }
     }
 
-    showLink(){
-      debugger
+
+    showLink(options:any={}){
         var url_file=this.url;
-        if(this.url.startsWith("http"))
-            url_file="b64="+btoa(this.url);
+        if(this.url.startsWith("http"))url_file="b64="+btoa(this.url);
 
         var sParam="";
         this.params.forEach((p)=>{
             if(p.label!=null && p.label.length>0)
                 sParam=sParam+p.label+"="+p.value+"&";
         });
+        if(sParam.length==0)sParam="noparam";
 
-        var baseURL="http://localhost:5000";
-        let rc="http://"+baseURL+"/job/"+url_file+"/"+this.algo+"/"+sParam+"?&pca="+this.pca;
+        let rc=ROOT_API+"job/"+url_file+"/"+this.algo+"/"+sParam+"?&pca="+this.pca;
         if(url_file.endsWith(".gml") || url_file.endsWith(".gexf") || url_file.endsWith(".gephi") || url_file.endsWith(".graphml")){
-            rc="http://"+baseURL+"/graph/"+url_file+"/fr?algo_comm=gn";
+            rc=ROOT_API+"graph/"+url_file+"/fr?algo_comm=gn";
         }
 
         //Ajout d'options supplémentaire sur l'url
@@ -182,9 +229,17 @@ export default class Files extends Vue {
         //
         // }
 
-        rc=rc+"&notext="+(this.notext==2);
-        rc=rc+"&nometrics="+(this.nometrics==2);
-        rc=rc+"&property="+(this.add_property==2);
+        if(options.notext==null)options.notext=(this.notext==2);
+        if(options.nometrics==null)options.nometrics=(this.nometrics==2);
+        if(options.add_property==null)options.add_property=(this.add_property==2);
+        if(options.autorotate==null)options.autorotate=(this.autorotate==2);
+        if(options.limit==null)options.limit=this.limit;
+
+
+        for(var o in options)
+            rc=rc+"&"+o+"="+options[o];
+
+        for(var k=0;k<15;k++)rc=rc.replace("=true","=True").replace("=false","=False"); //Syntaxe imposée par python
 
         return rc;
     }
@@ -194,7 +249,7 @@ export default class Files extends Vue {
         this.params=[];
         this.treatment.split("::")[1].split(" ").forEach((p)=>{
             var param={label:p.split("=")[0],value:p.split("=")[1]};
-            this.params.push(param);
+            if(param.label!=null && param.label.length>0)this.params.push(param);
         });
 
         var doc=this.treatment.split("::")[2];
@@ -203,14 +258,14 @@ export default class Files extends Vue {
     }
 
     openIn(url:string,target="_blank"){
+      for(var k=0;k<15;k++)url=url.replace("=true","=True").replace("=false","=False"); //Syntaxe imposée par python
       window.open(url,target);
     }
 
-    upload(type:boolean){
-      let f:File=this.file_public;
-      if(!type)f=this.file_private;
-        debugger
-        HTTP.post("/datas/measure/"+this.selected_file+"?public="+type,f)
+
+    upload(evt:any,type:boolean){
+      let f:File=evt[0];
+        HTTP.post("/datas/measure/"+f.name+"?public="+type,f)
             .then(r => {
                 this.url=f.name;
                 this.measures.push(f.name);
