@@ -89,7 +89,6 @@
                 format=format.replace("val=","measures=").replace("values=","measures=").replace("mesure=","measures=").replace("vals=","measures=").replace("mesures=","measures=").replace("artefact=","measures=");
                 for(var i=0;i<10;i++)format=format.replace("=",":").replace("&","_");
                 if(format.length>0)url+="&format="+format;
-
             }
 
             if(document.getElementById("notext").checked)url=url+"&notext=True";

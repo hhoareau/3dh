@@ -11,18 +11,25 @@
                           <div class="md-layout">
                               <div class="md-layout-item"><div class="md-title" style="text-align: left;">Datas / Files</div></div>
                               <div class="md-layout-item" style="text-align: right;">
-                                  <md-button class="md-raised md-primary" @click="selectFile(true)">Random</md-button>
+                                  <md-button class="md-raised md-primary" @click="help()">Help</md-button>
                               </div>
                           </div>
 
                       </md-card-header>
                       <md-card-content>
-                          <md-field>
-                              <label>Files</label>
-                              <md-select v-model="selected_file" id="_file" name="_file" @md-selected="selectFile()">
-                                  <md-option v-for="measure in measures" v-bind:value="measure">{{measure}}</md-option>
-                              </md-select>
-                          </md-field>
+                          <div class="md-layout">
+                              <div class="md-layout-item">
+                                  <md-field>
+                                      <label>Files</label>
+                                      <md-select v-model="selected_file" id="_file" name="_file" @md-selected="selectFile()">
+                                          <md-option v-for="measure in measures" v-bind:value="measure">{{measure}}</md-option>
+                                      </md-select>
+                                  </md-field>
+                              </div>
+                              <div class="md-layout-item" style="text-align: right;">
+                                  <md-button class="md-raised md-secondary" @click="randomFile()">Random</md-button>
+                              </div>
+                          </div>
 
                           <div class="md-layout">
                               <div class="md-layout-item">
@@ -37,7 +44,7 @@
 
                           <md-field>
                               <label>URL File</label>
-                              <md-input type="text" v-model="url"></md-input>
+                              <md-input type="url" v-model="url" @change="updateUrl()" @focus="clearList()"></md-input>
                               <span class="md-helper-text">Get the url of the file to compute</span>
                           </md-field>
 
@@ -45,7 +52,7 @@
                       </md-card-content>
                   </md-card>
                   <br>
-                  <md-card v-if="url.length>0">
+                  <md-card v-if="url.length+selected_file.length>0">
                       <md-card-header>
                           <div class="md-layout">
                               <div class="md-layout-item"><div class="md-title" style="text-align: left;">Treatment</div></div>
@@ -104,11 +111,11 @@
                       </md-card-content>
                   </md-card>
                   <br>
-                  <md-card v-if="url.length>0">
+                  <md-card v-if="selected_file.length+url.length>0">
                       <md-card-header>
                           <div class="md-layout">
                               <div class="md-layout-item"><div class="md-title" style="text-align: left;">Print</div></div>
-                              <div class="md-layout-item" style="text-align: right;"><md-button class="md-raised md-primary" @click="openIn(showLink())">Fullscreen</md-button></div>
+                              <div class="md-layout-item" style="text-align: right;"><md-button class="md-raised md-primary" @click="openIn(showLink())">Result</md-button></div>
                           </div>
                       </md-card-header>
                       <md-card-content>
@@ -170,6 +177,9 @@ export default class Files extends Vue {
     autorotate:number=2;
     pca:number=1;
 
+
+
+
   mounted(){
       HTTP.get('/datas/measures')
           .then(response => {
@@ -177,42 +187,83 @@ export default class Files extends Vue {
               response.data.forEach((m:string)=>{
                   if(!m.startsWith("temp"))
                       this.measures.push(m);
+                  this.randomFile();
               })
               //if(this.measures.length>0)this.selected_file=this.measures[0];
           })
           .catch(e => {});
     }
 
-    selectFile(random=false){
-      if(random && this.measures.length>0){
-          var i=Math.trunc(Math.random()*this.measures.length);
-          this.selected_file=this.measures[i];
-      }
-      this.url=this.selected_file;
-      if(this.url.length>0){
-          this.openIn(document.location.host+"/waiting_treatment.html","out");
-          setTimeout(()=>{
-              this.openIn(this.showLink({notext:true,nometrics:true,autorotate:true,add_property:true,limit:300}),"out");
-          },100);
-      }
+
+
+    randomFile(){
+        this.url="";
+        this.selected_file=this.measures[Math.trunc(Math.random()*this.measures.length)];
+        this.updateUrl(0);
     }
 
 
-    showLink(options:any={}){
-        var url_file=this.url;
-        if(this.url.startsWith("http"))url_file="b64="+btoa(this.url);
 
-        var sParam="";
-        this.params.forEach((p)=>{
-            if(p.label!=null && p.label.length>0)
-                sParam=sParam+p.label+"="+p.value+"&";
-        });
-        if(sParam.length==0)sParam="noparam";
+    updateUrl(delayInSecBeforeRepresentation:number=2){
+        var url=this.selected_file+this.url;
+        if(url.length==0)return;
 
-        let rc=ROOT_API+"job/"+url_file+"/"+this.algo+"/"+sParam+"?&pca="+this.pca;
-        if(url_file.endsWith(".gml") || url_file.endsWith(".gexf") || url_file.endsWith(".gephi") || url_file.endsWith(".graphml")){
-            rc=ROOT_API+"graph/"+url_file+"/fr?algo_comm=gn";
+        if(url.replace("file:","").length>0){
+            var url_analyse=ROOT_API+"analyse/"+url;
+            this.openIn("./waiting_treatment.html?url="+encodeURI(url_analyse),"out");
+            setTimeout(()=>{
+                this.openIn(this.showLink({notext:true,nometrics:true,autorotate:true,add_property:true,limit:10000}),"out");
+            },delayInSecBeforeRepresentation*1000+10);
         }
+    }
+
+
+
+    selectFile(){
+      this.url="";
+      this.updateUrl(2);
+    }
+
+
+
+
+    help(){
+        this.openIn("./help.html","out");
+    }
+
+
+    clearList(){
+        this.selected_file="";
+    }
+
+
+
+    showLink(options:any={}):string {
+        var url_file=this.url+this.selected_file;
+        if(url_file.length==0)return("");
+
+        var type="data";
+        if(url_file.indexOf(".gml")>-1 || url_file.indexOf(".gexf")>-1 || url_file.indexOf(".gephi")>-1 || url_file.indexOf(".graphml")>-1 )type="graph";
+
+        if(url_file.startsWith("http")) //Transformation pour assurer la transmission au serveur
+            url_file="b64="+btoa(url_file);
+
+        var rc=ROOT_API+"graph/"+url_file+"/fr?algo_comm=gn";
+        if(type=="data"){
+            var sParam="";
+            this.params.forEach((p)=>{
+                if(p.label!=null && p.label.length>0)
+                    sParam=sParam+p.label+"="+p.value+"&";
+            });
+            if(sParam.length==0){
+                sParam="noparam";
+                this.algo="NO";
+            }
+
+            rc=ROOT_API+"job/"+url_file+"/"+this.algo+"/"+sParam+"?&pca="+this.pca;
+        }
+
+        console.log("ouverture de "+rc);
 
         //Ajout d'options supplémentaire sur l'url
         if(this.notif.length>0)rc+="&notif="+this.notif;
@@ -265,11 +316,17 @@ export default class Files extends Vue {
 
     upload(evt:any,type:boolean){
       let f:File=evt[0];
-        HTTP.post("/datas/measure/"+f.name+"?public="+type,f)
-            .then(r => {
+
+      let fd=new FormData();
+      fd.append("files",f);
+        HTTP.post(
+            "/datas/measure/"+f.name+"?public="+type,
+            fd
+        ).then(r => {
                 this.url=f.name;
                 this.measures.push(f.name);
-
+                this.selected_file=f.name;
+                this.selectFile();
             }).catch((r)=>{
             alert("Pas de connexion"+r);
         });
