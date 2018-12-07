@@ -111,7 +111,7 @@
     function showParameters(document:any){
         var algo=document.getElementById("algo").value.split("::")[0];
         var params=document.getElementById("algo").value.split("::")[1];
-        document.getElementById("doc").src=document.getElementById("algo").value.split("::")[2];
+        //this.openIn(document.getElementById("algo").value.split("::")[2],"out");
         for(var i=0;i<10;i++)params=params.replace(" ","\n");
 
         document.getElementById("params").value=params;

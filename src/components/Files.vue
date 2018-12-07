@@ -1,11 +1,11 @@
 <template>
-  <div style="color:white;margin-left:10px;margin-right:10px;">
-      <h1 >3DH</h1>
-      3D representation & Data analysis<br><br>
-
-      <div class="md-layout md-gutter md-alignment-top">
-          <div class="md-layout-item md-medium-size-33 md-small-size-50 md-xsmall-size-100">
+  <div style="padding:0px;color:white;margin-left:10px;margin-right:10px;">
+      <div style="margin:0px;" class="md-layout md-gutter md-alignment-top">
+          <div class="md-layout-item md-medium-size-30 md-small-size-50 md-xsmall-size-100">
               <div class="md-alignment-top-center">
+                  <span style="font-size: xx-large;">3DH</span>
+                   - representation & Data analysis
+                  <br><br>
                   <md-card>
                       <md-card-header>
                           <div class="md-layout">
@@ -57,42 +57,56 @@
                           <div class="md-layout">
                               <div class="md-layout-item"><div class="md-title" style="text-align: left;">Treatment</div></div>
                               <div class="md-layout-item" style="text-align: right;">
-                                  <md-button class="md-raised md-primary" @click="openIn(showLink({notext:true,nometric:true,add_property:false,autorotate:true}),'out')">Execute</md-button>
+                                  <md-button class="md-raised md-primary" @click="preview()">Preview</md-button>
                               </div>
                           </div>
-
                       </md-card-header>
                       <md-card-content>
                           <md-tabs md-sync-route>
-                              <md-tab id="tab-home" md-label="Clustering" to="/components/tabs/Clustering">
+                              <md-tab id="tab-cluster" md-label="Clustering" to="/components/tabs/Clustering">
                                   <div class="md-layout md-gutter">
                                       <div class="md-layout-item">
                                           <md-field>
                                               <md-select v-model="treatment" @md-selected="showParameters()">
                                                   <md-option value="NOTREATMENT::::">NOTREATMENT</md-option>
 
-                                                  <md-option value="HDBSCAN::min_samples=2 min_cluster_size=3 alpha=0.5::https://hdbscan.readthedocs.io/en/latest/parameter_selection.html#">
+                                                  <md-option v-if="type=='data'" value="HDBSCAN::min_samples=2 min_cluster_size=3 alpha=0.5::https://hdbscan.readthedocs.io/en/latest/parameter_selection.html#">
                                                       HDBSCAN
                                                   </md-option>
 
-                                                  <md-option value="NEURALGAS::passes=3 distance_toremove_edge=40::https://en.wikipedia.org/wiki/Neural_gas">
+                                                  <md-option v-if="type=='data'" value="NEURALGAS::passes=3 distance_toremove_edge=40::https://en.wikipedia.org/wiki/Neural_gas">
                                                       NEURALGAS
                                                   </md-option>
 
-                                                  <md-option value="HAC::n_clusters=11,12,13::http://scikit-learn.org/stable/modules/generated/sklearn.cluster.AgglomerativeClustering.html">
+                                                  <md-option v-if="type=='data'" value="HAC::n_clusters=11,12,13::http://scikit-learn.org/stable/modules/generated/sklearn.cluster.AgglomerativeClustering.html">
                                                       HAC
                                                   </md-option>
 
-                                                  <md-option value="MEANSHIFT::bandwidth=0.1,0.3,0.2::http://scikit-learn.org/stable/modules/generated/sklearn.cluster.MeanShift.html">
+                                                  <md-option v-if="type=='data'" value="MEANSHIFT::bandwidth=0.1,0.3,0.2::http://scikit-learn.org/stable/modules/generated/sklearn.cluster.MeanShift.html">
                                                       MEANSHIFT
                                                   </md-option>
+
+                                                  <md-option v-if="type=='graph'" value="mod:: ::https://networkx.github.io/documentation/stable/reference/algorithms/generated/networkx.algorithms.community.modularity_max.greedy_modularity_communities.html#networkx.algorithms.community.modularity_max.greedy_modularity_communities">
+                                                      Greedy Modularity
+                                                  </md-option>
+
+                                                  <md-option v-if="type=='graph'" value="async::k=5 max_iter=15::https://networkx.github.io/documentation/stable/reference/algorithms/generated/networkx.algorithms.community.asyn_fluid.asyn_fluidc.html#networkx.algorithms.community.asyn_fluid.asyn_fluidc">
+                                                      Async Fluid
+                                                  </md-option>
+
+                                                  <md-option v-if="type=='graph'" value="GN:: ::https://networkx.github.io/documentation/latest/reference/algorithms/generated/networkx.algorithms.community.centrality.girvan_newman.html">
+                                                      Girvan Newman
+                                                  </md-option>
+
+                                                  <md-option v-if="type=='graph'" value="lab:: ::https://networkx.github.io/documentation/latest/reference/algorithms/generated/networkx.algorithms.community.label_propagation.label_propagation_communities.html">
+                                                      Label Propagation
+                                                  </md-option>
+
 
                                               </md-select>
                                           </md-field>
                                       </div>
                                   </div>
-
-
 
                                   <div v-if="params.length>0" class="md-layout md-gutter md-alignment-center">
                                       <div v-for="param in params" class="md-layout-item md-medium-size-33 md-small-size-50 md-xsmall-size-100">
@@ -104,7 +118,19 @@
                                   </div>
 
                               </md-tab>
-                              <md-tab id="tab-pages" md-label="Graphes" to="/components/tabs/graphes">
+                              <md-tab v-if="type=='graph'" id="tab-graph" md-label="Graph" to="/components/tabs/Clustering">
+                                  <div class="md-layout md-gutter">
+                                      <div class="md-layout-item">
+                                          <md-field>
+                                              <md-select v-model="algo_loc" @md-selected="preview()">
+                                                  <md-option value="fr">Fruchterman Reingold</md-option>
+                                                  <md-option value="Circular">circular</md-option>
+                                                  <md-option value="Spectral">spectral</md-option>
+                                                  <md-option value="Random">random</md-option>
+                                              </md-select>
+                                          </md-field>
+                                      </div>
+                                  </div>
 
                               </md-tab>
                           </md-tabs>
@@ -115,7 +141,7 @@
                       <md-card-header>
                           <div class="md-layout">
                               <div class="md-layout-item"><div class="md-title" style="text-align: left;">Print</div></div>
-                              <div class="md-layout-item" style="text-align: right;"><md-button class="md-raised md-primary" @click="openIn(showLink())">Result</md-button></div>
+                              <div class="md-layout-item" style="text-align: right;"><md-button class="md-raised md-primary" @click="openIn(showLink())">Execute</md-button></div>
                           </div>
                       </md-card-header>
                       <md-card-content>
@@ -137,7 +163,7 @@
                               <div class="md-layout-item"><md-checkbox v-model="notext" value="1">No text</md-checkbox></div>
                               <div class="md-layout-item"><md-checkbox v-model="nometrics" value="1">No metrics</md-checkbox></div>
                               <div class="md-layout-item"><md-checkbox v-model="add_property" value="1">Add Property</md-checkbox></div>
-                              <div class="md-layout-item"><md-checkbox v-model="autorotate" value="2">Rotate</md-checkbox></div>
+                              <div class="md-layout-item"><md-checkbox v-model="autorotate" value="1">Rotate</md-checkbox></div>
                           </div>
 
                       </md-card-content>
@@ -148,7 +174,35 @@
               </div>
           </div>
 
-          <div class="md-layout-item md-medium-size-33 md-small-size-50 md-xsmall-size-100">
+          <div class="md-layout-item md-medium-size-70 md-small-size-50 md-xsmall-size-100">
+              <!-- Toolbar -->
+              <md-toolbar class="md-dense">
+                  <md-button class="md-icon-button" @click="execCommand('a')"><md-icon >3d_rotation</md-icon></md-button>
+                  <md-button class="md-icon-button" @click="execCommand('A')"><md-icon style="opacity: 0.4;" >3d_rotation</md-icon></md-button>
+
+                  <md-button class="md-icon-button" @click="execCommand('s')"><md-icon>highlight</md-icon></md-button>
+                  <md-button class="md-icon-button" @click="execCommand('S')"><md-icon style="opacity: 0.4;">highlight</md-icon></md-button>
+
+                  <md-button class="md-icon-button" @click="execCommand('v')"><md-icon>videocam</md-icon></md-button>
+                  <md-button class="md-icon-button" @click="execCommand('V')"><md-icon style="opacity: 0.4;">videocam</md-icon></md-button>
+
+                  <md-button class="md-icon-button" @click="execCommand('n')"><md-icon>cloud</md-icon></md-button>
+                  <md-button class="md-icon-button" @click="execCommand('N')"><md-icon style="opacity: 0.4;">cloud</md-icon></md-button>
+
+                  <md-button class="md-icon-button" @click="execCommand('p')"><md-icon>crop_free</md-icon></md-button>
+                  <md-button class="md-icon-button" @click="execCommand('P')"><md-icon style="opacity: 0.4;">crop_free</md-icon></md-button>
+
+                  <md-button class="md-icon-button" @click="execCommand('+')"><md-icon>zoom_in</md-icon></md-button>
+                  <md-button class="md-icon-button" @click="execCommand('-')"><md-icon>zoom_out</md-icon></md-button>
+
+                  <md-button class="md-toolbar-offset md-icon-button" @click="execCommand('0')">0</md-button>
+                  <md-button class="md-icon-button" @click="execCommand('1')">1</md-button>
+                  <md-button class="md-icon-button" @click="execCommand('2')">2</md-button>
+                  <md-button class="md-icon-button" @click="execCommand('3')">3</md-button>
+                  <md-button class="md-icon-button" @click="execCommand('4')">4</md-button>
+                  <md-button class="md-icon-button" @click="execCommand('5')">5</md-button>
+                  <md-button class="md-icon-button" @click="execCommand('6')">6</md-button>
+              </md-toolbar>
               <iframe style="padding:10px;background-color:lightgrey;border: none;min-height: 800px;" width="100%" height="1000" id="doc" name="out"></iframe>
           </div>
       </div>
@@ -166,6 +220,7 @@ export default class Files extends Vue {
     selected_file="";
     measures:string[]=[];
     url:string="";
+    algo_loc:string="fr";
     limit:number=1000000;
     treatment:string="NOTREATMENT::::";
     params: any[]=[];
@@ -176,8 +231,8 @@ export default class Files extends Vue {
     add_property:number=1;
     autorotate:number=2;
     pca:number=1;
-
-
+    type:string="data";
+    root_api:string=ROOT_API;
 
 
   mounted(){
@@ -195,6 +250,9 @@ export default class Files extends Vue {
     }
 
 
+    preview(){
+        this.openIn(this.showLink({notext:true,nometric:true,add_property:false,autorotate:true,pca:1}),'out')
+    }
 
     randomFile(){
         this.url="";
@@ -221,6 +279,8 @@ export default class Files extends Vue {
 
     selectFile(){
       this.url="";
+      this.algo="";
+      this.algo_loc="fr";
       this.updateUrl(2);
     }
 
@@ -236,20 +296,23 @@ export default class Files extends Vue {
         this.selected_file="";
     }
 
-
+    execCommand(key:string){
+      var iframe:any=document.getElementsByName("out")[0];
+      iframe.contentWindow.postMessage({key:key},"*");
+    }
 
     showLink(options:any={}):string {
         var url_file=this.url+this.selected_file;
         if(url_file.length==0)return("");
 
-        var type="data";
-        if(url_file.indexOf(".gml")>-1 || url_file.indexOf(".gexf")>-1 || url_file.indexOf(".gephi")>-1 || url_file.indexOf(".graphml")>-1 )type="graph";
+        this.type="data";
+        if(url_file.indexOf(".gml")>-1 || url_file.indexOf(".gexf")>-1 || url_file.indexOf(".gephi")>-1 || url_file.indexOf(".graphml")>-1 )this.type="graph";
 
         if(url_file.startsWith("http")) //Transformation pour assurer la transmission au serveur
             url_file="b64="+btoa(url_file);
 
-        var rc=ROOT_API+"graph/"+url_file+"/fr?algo_comm=gn";
-        if(type=="data"){
+        var rc=ROOT_API+"graph/"+url_file+"/"+this.algo_loc+"?algo_comm="+this.algo;
+        if(this.type=="data"){
             var sParam="";
             this.params.forEach((p)=>{
                 if(p.label!=null && p.label.length>0)
@@ -260,7 +323,7 @@ export default class Files extends Vue {
                 this.algo="NO";
             }
 
-            rc=ROOT_API+"job/"+url_file+"/"+this.algo+"/"+sParam+"?&pca="+this.pca;
+            rc=ROOT_API+"job/"+url_file+"/"+this.algo+"/"+sParam+"?";
         }
 
         console.log("ouverture de "+rc);
@@ -285,6 +348,7 @@ export default class Files extends Vue {
         if(options.add_property==null)options.add_property=(this.add_property==2);
         if(options.autorotate==null)options.autorotate=(this.autorotate==2);
         if(options.limit==null)options.limit=this.limit;
+        if(options.pca==null)options.pca=this.pca;
 
 
         for(var o in options)
@@ -296,6 +360,7 @@ export default class Files extends Vue {
     }
 
     showParameters(){
+        this.openIn(this.treatment.split("::")[2],"out");
         this.algo=this.treatment.split("::")[0];
         this.params=[];
         this.treatment.split("::")[1].split(" ").forEach((p)=>{
