@@ -1,10 +1,10 @@
 <template>
   <div style="padding:0px;color:white;margin-left:10px;margin-right:10px;">
       <div style="margin:0px;" class="md-layout md-gutter md-alignment-top">
-          <div class="md-layout-item md-medium-size-30 md-small-size-50 md-xsmall-size-100">
+          <div class="md-layout-item md-xlarge-size-30 md-large-size-40 md-medium-size-40 md-small-size-100 md-xsmall-size-100">
               <div class="md-alignment-top-center">
                   <span style="font-size: xx-large;">3DH</span>
-                   - representation & Data analysis
+                   - Representation & Data analysis
                   <br><br>
                   <md-card>
                       <md-card-header>
@@ -44,14 +44,17 @@
 
                           <md-field>
                               <label>URL File</label>
-                              <md-input type="url" v-model="url" @change="updateUrl()" @focus="clearList()"></md-input>
+                              <md-input type="url" v-model="url" @focus="clearList()"></md-input>
                               <span class="md-helper-text">Get the url of the file to compute</span>
                           </md-field>
+                          <br>
 
+                          <FileFormat v-on:format="updateFormat($event)" v-bind:cols="data_cols"></FileFormat>
 
                       </md-card-content>
+
                   </md-card>
-                  <br>
+                    <br>
                   <md-card v-if="url.length+selected_file.length>0">
                       <md-card-header>
                           <div class="md-layout">
@@ -122,7 +125,7 @@
                                   <div class="md-layout md-gutter">
                                       <div class="md-layout-item">
                                           <md-field>
-                                              <md-select v-model="algo_loc" @md-selected="preview()">
+                                              <md-select v-model="algo_loc">
                                                   <md-option value="fr">Fruchterman Reingold</md-option>
                                                   <md-option value="Circular">circular</md-option>
                                                   <md-option value="Spectral">spectral</md-option>
@@ -140,7 +143,7 @@
                   <md-card v-if="selected_file.length+url.length>0">
                       <md-card-header>
                           <div class="md-layout">
-                              <div class="md-layout-item"><div class="md-title" style="text-align: left;">Print</div></div>
+                              <div class="md-layout-item"><div class="md-title" style="text-align: left;">Advanced</div></div>
                               <div class="md-layout-item" style="text-align: right;"><md-button class="md-raised md-primary" @click="openIn(showLink())">Execute</md-button></div>
                           </div>
                       </md-card-header>
@@ -173,8 +176,7 @@
 
               </div>
           </div>
-
-          <div class="md-layout-item md-medium-size-70 md-small-size-50 md-xsmall-size-100">
+          <div class="md-layout-item md-xlarge-size-70 md-large-size-60 md-medium-size-60 md-small-size-100 md-xsmall-size-100">
               <!-- Toolbar -->
               <md-toolbar class="md-dense">
                   <md-button class="md-icon-button" @click="execCommand('a')"><md-icon >3d_rotation</md-icon></md-button>
@@ -195,13 +197,19 @@
                   <md-button class="md-icon-button" @click="execCommand('+')"><md-icon>zoom_in</md-icon></md-button>
                   <md-button class="md-icon-button" @click="execCommand('-')"><md-icon>zoom_out</md-icon></md-button>
 
-                  <md-button class="md-toolbar-offset md-icon-button" @click="execCommand('0')">0</md-button>
-                  <md-button class="md-icon-button" @click="execCommand('1')">1</md-button>
-                  <md-button class="md-icon-button" @click="execCommand('2')">2</md-button>
-                  <md-button class="md-icon-button" @click="execCommand('3')">3</md-button>
-                  <md-button class="md-icon-button" @click="execCommand('4')">4</md-button>
-                  <md-button class="md-icon-button" @click="execCommand('5')">5</md-button>
-                  <md-button class="md-icon-button" @click="execCommand('6')">6</md-button>
+                  <div v-if="add_property=='1'">
+                      <md-button class="md-toolbar-offset md-icon-button" @click="execCommand('0')">0</md-button>
+                      <md-button class="md-icon-button" @click="execCommand('1')">1</md-button>
+                      <md-button class="md-icon-button" @click="execCommand('2')">2</md-button>
+                      <md-button class="md-icon-button" @click="execCommand('3')">3</md-button>
+                      <md-button class="md-icon-button" @click="execCommand('4')">4</md-button>
+                      <md-button class="md-icon-button" @click="execCommand('5')">5</md-button>
+                      <md-button class="md-icon-button" @click="execCommand('6')">6</md-button>
+                      <md-button class="md-icon-button" @click="execCommand('7')">7</md-button>
+                      <md-button class="md-icon-button" @click="execCommand('8')">8</md-button>
+                      <md-button class="md-icon-button" @click="execCommand('9')">9</md-button>
+                  </div>
+
               </md-toolbar>
               <iframe style="padding:10px;background-color:lightgrey;border: none;min-height: 800px;" width="100%" height="1000" id="doc" name="out"></iframe>
           </div>
@@ -214,26 +222,30 @@
 
 import {HTTP,ROOT_API} from '../http-constants'
 import { Component, Vue } from 'vue-property-decorator';
+import FileFormat from "./FileFormat.vue"
 
-@Component
+@Component({name:"Files",components:{FileFormat}})
 export default class Files extends Vue {
     selected_file="";
+    data_cols:any[]=[];
     measures:string[]=[];
     url:string="";
     algo_loc:string="fr";
-    limit:number=1000000;
+    limit:number=5000;
     treatment:string="NOTREATMENT::::";
     params: any[]=[];
     notif:string="";
     algo:string="";
-    notext:number=1;
-    nometrics:number=1;
-    add_property:number=1;
-    autorotate:number=2;
+    notext:string="1";
+    nometrics:string="1";
+    add_property:string="0";
+    autorotate:string="1";
     pca:number=1;
     type:string="data";
     root_api:string=ROOT_API;
-
+    format:string="";
+    lastRender:number=0;
+    hRender:any=null;
 
   mounted(){
       HTTP.get('/datas/measures')
@@ -250,38 +262,45 @@ export default class Files extends Vue {
     }
 
 
-    preview(){
-        this.openIn(this.showLink({notext:true,nometric:true,add_property:false,autorotate:true,pca:1}),'out')
+    updateFormat(evt:any){
+      this.format="index:"+evt.index+"_measures:"+evt.measure+"_properties:"+evt.prop;
+    }
+
+    preview(delay=0){
+        this.openIn(this.showLink({autorotate:true,pca:1}),'out',delay)
     }
 
     randomFile(){
         this.url="";
         this.selected_file=this.measures[Math.trunc(Math.random()*this.measures.length)];
+    }
+
+
+    selectFile(){
+        this.url="";
+        this.algo="";
+        this.algo_loc="fr";
         this.updateUrl(0);
     }
 
 
-
     updateUrl(delayInSecBeforeRepresentation:number=2){
-        var url=this.selected_file+this.url;
+      var url=this.selected_file+this.url;
         if(url.length==0)return;
 
         if(url.replace("file:","").length>0){
-            var url_analyse=ROOT_API+"analyse/"+url;
-            this.openIn("./waiting_treatment.html?url="+encodeURI(url_analyse),"out");
-            setTimeout(()=>{
-                this.openIn(this.showLink({notext:true,nometrics:true,autorotate:true,add_property:true,limit:10000}),"out");
-            },delayInSecBeforeRepresentation*1000+10);
+            var url_analyse=ROOT_API+"analyse/"+url+"?format=json";
+            HTTP.get(url_analyse).then((r:any)=>{
+                this.data_cols=r.data;
+                for(var i=0;i<r.data.length;i++){
+                    this.data_cols[i].index="radio"+i;
+                    this.data_cols[i].format=this.data_cols[i].Type;
+                }
+
+            });
+            //this.openIn("./waiting_treatment.html","out");
+            this.preview();
         }
-    }
-
-
-
-    selectFile(){
-      this.url="";
-      this.algo="";
-      this.algo_loc="fr";
-      this.updateUrl(2);
     }
 
 
@@ -300,6 +319,7 @@ export default class Files extends Vue {
       var iframe:any=document.getElementsByName("out")[0];
       iframe.contentWindow.postMessage({key:key},"*");
     }
+
 
     showLink(options:any={}):string {
         var url_file=this.url+this.selected_file;
@@ -323,7 +343,7 @@ export default class Files extends Vue {
                 this.algo="NO";
             }
 
-            rc=ROOT_API+"job/"+url_file+"/"+this.algo+"/"+sParam+"?";
+            rc=ROOT_API+"job/"+url_file+"/"+this.algo+"/"+sParam+"?filter="+this.format;
         }
 
         console.log("ouverture de "+rc);
@@ -343,10 +363,10 @@ export default class Files extends Vue {
         //
         // }
 
-        if(options.notext==null)options.notext=(this.notext==2);
-        if(options.nometrics==null)options.nometrics=(this.nometrics==2);
-        if(options.add_property==null)options.add_property=(this.add_property==2);
-        if(options.autorotate==null)options.autorotate=(this.autorotate==2);
+        if(options.notext==null)options.notext=(this.notext=="1");
+        if(options.nometrics==null)options.nometrics=(this.nometrics=="1");
+        if(options.add_property==null)options.add_property=(this.add_property=="1");
+        if(options.autorotate==null)options.autorotate=(this.autorotate=="1");
         if(options.limit==null)options.limit=this.limit;
         if(options.pca==null)options.pca=this.pca;
 
@@ -355,7 +375,7 @@ export default class Files extends Vue {
             rc=rc+"&"+o+"="+options[o];
 
         for(var k=0;k<15;k++)rc=rc.replace("=true","=True").replace("=false","=False"); //Syntaxe imposée par python
-
+        console.log("exec:"+rc);
         return rc;
     }
 
@@ -373,9 +393,15 @@ export default class Files extends Vue {
         if(this.algo=="NEURALGAS" && this.notif=="")this.notif="dev@f80.fr";
     }
 
-    openIn(url:string,target="_blank"){
+    openIn(url:string,target="_blank",delay=0){
       for(var k=0;k<15;k++)url=url.replace("=true","=True").replace("=false","=False"); //Syntaxe imposée par python
-      window.open(url,target);
+
+        clearTimeout(this.hRender);
+        this.hRender=setTimeout(()=>{
+            window.open(url,target);
+            this.lastRender=new Date().getTime();
+        },1000*delay);
+
     }
 
 
@@ -391,7 +417,7 @@ export default class Files extends Vue {
                 this.url=f.name;
                 this.measures.push(f.name);
                 this.selected_file=f.name;
-                this.selectFile();
+                //this.selectFile();
             }).catch((r)=>{
             alert("Pas de connexion"+r);
         });
