@@ -3,8 +3,19 @@
       <div style="margin:0px;" class="md-layout md-gutter md-alignment-top">
           <div class="md-layout-item md-xlarge-size-30 md-large-size-40 md-medium-size-40 md-small-size-100 md-xsmall-size-100">
               <div class="md-alignment-top-center">
-                  <span style="font-size: xx-large;">3DH</span>
-                   - Representation & Data analysis
+                  <div class="md-layout">
+                      <div class="md-layout-item md-size-40 md-alignment-center-left">
+                          <span style="font-size: xx-large;">3DH</span>
+                      </div>
+                      <div style="font-size: large;font-weight: lighter;" class="md-layout-item md-size-40 md-alignment-center-left md-xlarge-size">
+                          {{hourglass}}
+                      </div>
+                      <div style="font-size: small;" class="md-layout-item md-size-20 md-alignment-centered">
+                          <md-progress-spinner v-if="hourglass.length>0" :md-diameter="40" :md-stroke="5" md-mode="indeterminate"></md-progress-spinner>
+                      </div>
+
+                  </div>
+
                   <br><br>
                   <md-card>
                       <md-card-header>
@@ -27,6 +38,7 @@
                                   </md-field>
                               </div>
                               <div class="md-layout-item" style="text-align: right;">
+                                  <md-button class="md-raised md-secondary" @click="deleteFile()">Delete</md-button>
                                   <md-button class="md-raised md-secondary" @click="randomFile()">Random</md-button>
                               </div>
                           </div>
@@ -49,7 +61,7 @@
                           </md-field>
                           <br>
 
-                          <FileFormat v-on:format="updateFormat($event)" v-bind:cols="data_cols"></FileFormat>
+                          <FileFormat v-if="selected_file.length>0 && type=='data'" v-on:format="updateFormat($event)" v-bind:cols="data_cols"></FileFormat>
 
                       </md-card-content>
 
@@ -60,7 +72,7 @@
                           <div class="md-layout">
                               <div class="md-layout-item"><div class="md-title" style="text-align: left;">Treatment</div></div>
                               <div class="md-layout-item" style="text-align: right;">
-                                  <md-button class="md-raised md-primary" @click="preview()">Preview</md-button>
+                                  <md-button class="md-raised md-primary" v-show="hourglass.length==0" @click="preview()">Preview</md-button>
                               </div>
                           </div>
                       </md-card-header>
@@ -121,7 +133,7 @@
                                   </div>
 
                               </md-tab>
-                              <md-tab v-if="type=='graph'" id="tab-graph" md-label="Graph" to="/components/tabs/Clustering">
+                              <md-tab v-if="type=='graph'" id="tab-graph" md-label="Graph" to="/components/tabs/graph">
                                   <div class="md-layout md-gutter">
                                       <div class="md-layout-item">
                                           <md-field>
@@ -136,6 +148,28 @@
                                   </div>
 
                               </md-tab>
+                              <md-tab id="tab-convert" md-label="Convert" to="/components/tabs/converting">
+                                  <div class="md-layout">
+                                      <div class="md-layout-item md-size-30">
+                                          <md-button v-if="type=='data'" class="md-raised md-secondary" @click="convertToGraph()">To graph</md-button>
+                                      </div>
+                                      <div class="md-layout-item md-size-70">
+                                          <md-field>
+                                              <label>Threshold distance</label>
+                                              <md-input type="number" v-model="distance" step="0.02"></md-input>
+                                          </md-field>
+                                      </div>
+                                  </div>
+
+                                    <div class="md-layout">
+                                      <div class="md-layout-item md-size-30">
+                                          <md-button v-if="type=='data'" class="md-raised md-secondary" @click="convertToSubData()">To subData</md-button>
+                                      </div>
+
+                                  </div>
+
+
+                              </md-tab>
                           </md-tabs>
                       </md-card-content>
                   </md-card>
@@ -148,14 +182,14 @@
                           </div>
                       </md-card-header>
                       <md-card-content>
-                          <div class="md-layout md-gutter">
-                              <div class="md-layout-item">
+                          <div class="md-layout">
+                              <div class="md-layout-item md-size-20">
                                   <md-field>
                                       <label>Nb View</label>
                                       <md-input type="number" v-model="pca"></md-input>
                                   </md-field>
                               </div>
-                              <div class="md-layout-item">
+                              <div class="md-layout-item md-size-20">
                                   <md-field>
                                       <label>Limit</label>
                                       <md-input type="number" v-model="limit"></md-input>
@@ -197,6 +231,8 @@
                   <md-button class="md-icon-button" @click="execCommand('+')"><md-icon>zoom_in</md-icon></md-button>
                   <md-button class="md-icon-button" @click="execCommand('-')"><md-icon>zoom_out</md-icon></md-button>
 
+                  <md-button class="md-icon-button" @click="execCommand('E')">Save</md-button>
+
                   <div v-if="add_property=='1'">
                       <md-button class="md-toolbar-offset md-icon-button" @click="execCommand('0')">0</md-button>
                       <md-button class="md-icon-button" @click="execCommand('1')">1</md-button>
@@ -230,6 +266,7 @@ export default class Files extends Vue {
     data_cols:any[]=[];
     measures:string[]=[];
     url:string="";
+    distance:number=0.2;
     algo_loc:string="fr";
     limit:number=5000;
     treatment:string="NOTREATMENT::::";
@@ -246,28 +283,42 @@ export default class Files extends Vue {
     format:string="";
     lastRender:number=0;
     hRender:any=null;
+    hourglass:string="";
+    rows=0;
 
   mounted(){
+      this.refreshFiles();
+  }
+
+  refreshFiles(){
+      this.hourglass="Files listing";
       HTTP.get('/datas/measures')
           .then(response => {
               this.measures = [];
+
+              this.hourglass="";
               response.data.forEach((m:string)=>{
                   if(!m.startsWith("temp"))
                       this.measures.push(m);
-                  this.randomFile();
-              })
-              //if(this.measures.length>0)this.selected_file=this.measures[0];
+              });
+              if(this.measures.indexOf(this.selected_file)==-1){
+                  if(this.measures.length>0)
+                      this.randomFile();
+                  else
+                      this.selected_file="";
+              }
+
+
           })
           .catch(e => {});
-    }
-
+  }
 
     updateFormat(evt:any){
       this.format="index:"+evt.index+"_measures:"+evt.measure+"_properties:"+evt.prop;
     }
 
-    preview(delay=0){
-        this.openIn(this.showLink({autorotate:true,pca:1}),'out',delay)
+    preview(){
+      this.openIn(this.showLink({autorotate:true,pca:1}),'out')
     }
 
     randomFile(){
@@ -275,35 +326,64 @@ export default class Files extends Vue {
         this.selected_file=this.measures[Math.trunc(Math.random()*this.measures.length)];
     }
 
+    deleteFile(){
+        this.hourglass="File deleting";
+        HTTP.delete("/datas/measure/"+this.selected_file).then(r=>{
+            this.refreshFiles();
+        });
+    }
 
-    selectFile(){
+    raz(){
+        this.selected_file="";
         this.url="";
         this.algo="";
         this.algo_loc="fr";
-        this.updateUrl(0);
+    }
+
+    selectFile(name:string=""){
+      if(name.length>0)this.selected_file=name;
+      if(this.selected_file.length>0)this.updateData();
+    }
+
+    convertToGraph(){
+      this.hourglass="Converting to graphe";
+      HTTP.get(ROOT_API+"tograph/"+this.selected_file+"?distance="+this.distance).then((r:any)=>{
+          this.selected_file=r.data;
+          this.refreshFiles();
+      })
+    }
+
+    convertToSubData(){
+        this.execCommand("E");
     }
 
 
-    updateUrl(delayInSecBeforeRepresentation:number=2){
+    /**
+     * Mise à jour des données sources
+     * @param delayInSecBeforeRepresentation
+     */
+    updateData(func:any=null){
       var url=this.selected_file+this.url;
         if(url.length==0)return;
 
         if(url.replace("file:","").length>0){
             var url_analyse=ROOT_API+"analyse/"+url+"?format=json";
+            this.hourglass="Data analyzing";
             HTTP.get(url_analyse).then((r:any)=>{
-                this.data_cols=r.data;
-                for(var i=0;i<r.data.length;i++){
+                this.hourglass="";
+                this.data_cols=r.data.columns;
+                this.rows=r.data.rows;
+                this.type=r.data.type;
+                for(var i=0;i<this.data_cols.length;i++){
                     this.data_cols[i].index="radio"+i;
                     this.data_cols[i].format=this.data_cols[i].Type;
                 }
-
+                if(func!=null)func();
+            }).catch(()=>{
+                this.hourglass="";
             });
-            //this.openIn("./waiting_treatment.html","out");
-            this.preview();
         }
     }
-
-
 
 
     help(){
@@ -393,15 +473,21 @@ export default class Files extends Vue {
         if(this.algo=="NEURALGAS" && this.notif=="")this.notif="dev@f80.fr";
     }
 
-    openIn(url:string,target="_blank",delay=0){
-      for(var k=0;k<15;k++)url=url.replace("=true","=True").replace("=false","=False"); //Syntaxe imposée par python
+    openIn(url:string,target="_blank",func:any=null){
+        if(url.length>0){
+            for(var k=0;k<15;k++)url=url.replace("=true","=True").replace("=false","=False"); //Syntaxe imposée par python
 
-        clearTimeout(this.hRender);
-        this.hRender=setTimeout(()=>{
-            window.open(url,target);
+                this.hourglass="Treatment";
+
+                window.open(url,target);
+                document.getElementsByName("out")[0].addEventListener('load', ()=>{
+                    this.hourglass="";
+                    if(func!=null)func();
+                }, false);
+
+
             this.lastRender=new Date().getTime();
-        },1000*delay);
-
+        }
     }
 
 
@@ -410,16 +496,14 @@ export default class Files extends Vue {
 
       let fd=new FormData();
       fd.append("files",f);
-        HTTP.post(
-            "/datas/measure/"+f.name+"?public="+type,
-            fd
-        ).then(r => {
-                this.url=f.name;
+      this.raz();
+      this.hourglass="File uploading";
+        HTTP.post("/datas/measure/"+f.name+"?public="+type,fd).then(r => {
                 this.measures.push(f.name);
-                this.selected_file=f.name;
-                //this.selectFile();
+                this.selectFile(f.name);
+                this.hourglass="";
             }).catch((r)=>{
-            alert("Pas de connexion"+r);
+                this.hourglass="";
         });
     }
 
