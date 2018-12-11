@@ -2,7 +2,7 @@
   "name": "3dh",
   "version": "0.1.0",
   "private": true,
-  "homepage":"https://github.com/f80dev/3dh",
+  "homepage":"https://hhoareau.github.io/3dh/docs/index.html",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
