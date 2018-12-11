@@ -47,7 +47,8 @@
 
 
     function showlink(document:any,multiple=false):string[] {
-        var domain:any=document.location.host;
+        var domain:any=document.location.protocol+document.location.host;
+        debugger
         if(!domain.endWitdh("/"))domain=domain+"/";
 
         var notif=document.getElementById("email").value;
@@ -125,7 +126,7 @@
     export function testDownload(document:any){
         var file=document.getElementById("url").value;
         if(file.indexOf("http")!=0)
-            file="http://45.77.160.220:5000/datas/"+file;
+            file="/datas/"+file;
         window.open(file,"blank_");
     }
 
