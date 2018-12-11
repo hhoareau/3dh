@@ -2,9 +2,11 @@
   "name": "3dh",
   "version": "0.1.0",
   "private": true,
+  "homepage":"https://github.com/f80dev/3dh",
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build"
+    "build": "vue-cli-service build",
+    "deploy":"node ./node_modules/vue-gh-pages/index.js"
   },
   "dependencies": {
     "axios": "^0.18.0",
@@ -21,6 +23,7 @@
     "@vue/cli-service": "^3.2.0",
     "push-dir": "^0.4.1",
     "typescript": "^3.0.0",
+    "vue-gh-pages": "^1.19.0",
     "vue-template-compiler": "^2.5.17"
   }
 }
