@@ -168,8 +168,6 @@
 
 
 
-
-
     var start:number=0;
     function log(document:any,s:string){
         if(document.getElementById("console").style.height!="100px"){
@@ -182,7 +180,6 @@
         var new_s=format+" - "+s+"<br>"+document.getElementById("console").innerHTML;
         document.getElementById("console").innerHTML=new_s.substr(0,300);
     }
-
 
 
     function clear_log(document:any){

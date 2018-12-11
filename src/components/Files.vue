@@ -13,8 +13,10 @@
                       <div style="font-size: small;" class="md-layout-item md-size-20 md-alignment-centered">
                           <md-progress-spinner v-if="hourglass.length>0" :md-diameter="40" :md-stroke="5" md-mode="indeterminate"></md-progress-spinner>
                       </div>
-
                   </div>
+                  <md-snackbar :md-position="centered" :md-duration="4000" :md-active.sync="toast_message.length>0">
+                      {{toast_message}}
+                  </md-snackbar>
 
                   <br><br>
                   <md-card>
@@ -38,8 +40,8 @@
                                   </md-field>
                               </div>
                               <div class="md-layout-item" style="text-align: right;">
-                                  <md-button class="md-raised md-secondary" @click="deleteFile()">Delete</md-button>
-                                  <md-button class="md-raised md-secondary" @click="randomFile()">Random</md-button>
+                                  <md-button v-show="selected_file.length>0" class="md-raised md-secondary" @click="deleteFile()">Delete</md-button>
+                                  <md-button v-show="measures.length>0" class="md-raised md-secondary" @click="randomFile()">Random</md-button>
                               </div>
                           </div>
 
@@ -54,12 +56,7 @@
                               </div>
                           </div>
 
-                          <md-field>
-                              <label>URL File</label>
-                              <md-input type="url" v-model="url" @focus="clearList()"></md-input>
-                              <span class="md-helper-text">Get the url of the file to compute</span>
-                          </md-field>
-                          <br>
+                          <md-button class="md-raised md-secondary" @click="analyseClipboard()">Analyse Clipboard</md-button>
 
                           <FileFormat v-if="selected_file.length>0 && type=='data'" v-on:format="updateFormat($event)" v-bind:cols="data_cols"></FileFormat>
 
@@ -67,7 +64,7 @@
 
                   </md-card>
                     <br>
-                  <md-card v-if="url.length+selected_file.length>0">
+                  <md-card v-if="selected_file.length>0">
                       <md-card-header>
                           <div class="md-layout">
                               <div class="md-layout-item"><div class="md-title" style="text-align: left;">Treatment</div></div>
@@ -174,7 +171,7 @@
                       </md-card-content>
                   </md-card>
                   <br>
-                  <md-card v-if="selected_file.length+url.length>0">
+                  <md-card v-if="selected_file.length>0">
                       <md-card-header>
                           <div class="md-layout">
                               <div class="md-layout-item"><div class="md-title" style="text-align: left;">Advanced</div></div>
@@ -205,9 +202,6 @@
 
                       </md-card-content>
                   </md-card>
-
-
-
               </div>
           </div>
           <div class="md-layout-item md-xlarge-size-70 md-large-size-60 md-medium-size-60 md-small-size-100 md-xsmall-size-100">
@@ -263,9 +257,9 @@ import FileFormat from "./FileFormat.vue"
 @Component({name:"Files",components:{FileFormat}})
 export default class Files extends Vue {
     selected_file="";
+    toast_message:string="";
     data_cols:any[]=[];
     measures:string[]=[];
-    url:string="";
     distance:number=0.2;
     algo_loc:string="fr";
     limit:number=5000;
@@ -307,10 +301,10 @@ export default class Files extends Vue {
                   else
                       this.selected_file="";
               }
-
-
           })
-          .catch(e => {});
+          .catch(e => {
+              this.showMessage("Technical error");
+          });
   }
 
     updateFormat(evt:any){
@@ -322,7 +316,6 @@ export default class Files extends Vue {
     }
 
     randomFile(){
-        this.url="";
         this.selected_file=this.measures[Math.trunc(Math.random()*this.measures.length)];
     }
 
@@ -330,19 +323,41 @@ export default class Files extends Vue {
         this.hourglass="File deleting";
         HTTP.delete("/datas/measure/"+this.selected_file).then(r=>{
             this.refreshFiles();
+        }).catch(e=>{
+            this.hourglass="";
+            this.showMessage("Treatment error");
         });
     }
 
+    showMessage(s:string,delayInSec=4){
+      this.toast_message=s;
+      this.hourglass="";
+      setTimeout(()=>{this.toast_message=""},delayInSec*1000);
+    }
+
+
     raz(){
         this.selected_file="";
-        this.url="";
         this.algo="";
         this.algo_loc="fr";
     }
 
     selectFile(name:string=""){
       if(name.length>0)this.selected_file=name;
-      if(this.selected_file.length>0)this.updateData();
+      if(this.selected_file.length>0){
+          this.updateData(this.selected_file,()=>{
+              this.preview();
+          });
+      }
+
+    }
+
+    analyseClipboard(){
+      var nav:any=window.navigator;
+        nav.clipboard.readText().then((text:string) => {
+            if(text.startsWith("http"))
+                this.updateData(text);
+        });
     }
 
     convertToGraph(){
@@ -362,12 +377,12 @@ export default class Files extends Vue {
      * Mise à jour des données sources
      * @param delayInSecBeforeRepresentation
      */
-    updateData(func:any=null){
-      var url=this.selected_file+this.url;
-        if(url.length==0)return;
+    updateData(url:string="",func:any=null){
+        if(url.length==0)url=this.selected_file;
 
         if(url.replace("file:","").length>0){
-            var url_analyse=ROOT_API+"analyse/"+url+"?format=json";
+            url=encodeURIComponent(url);
+            var url_analyse=ROOT_API+"analyse?format=json&url="+url;
             this.hourglass="Data analyzing";
             HTTP.get(url_analyse).then((r:any)=>{
                 this.hourglass="";
@@ -380,7 +395,7 @@ export default class Files extends Vue {
                 }
                 if(func!=null)func();
             }).catch(()=>{
-                this.hourglass="";
+                this.showMessage("Technical Error");
             });
         }
     }
@@ -402,7 +417,7 @@ export default class Files extends Vue {
 
 
     showLink(options:any={}):string {
-        var url_file=this.url+this.selected_file;
+        var url_file=this.selected_file;
         if(url_file.length==0)return("");
 
         this.type="data";
