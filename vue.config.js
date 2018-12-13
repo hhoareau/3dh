@@ -1,4 +1,4 @@
 module.exports={
-    baseUrl: process.env.NODE_ENV === 'production' ? '/' : '/',
+    baseUrl: process.env.NODE_ENV === 'production' ? '/3dh/' : '/',
     outputDir: "docs"
 }
