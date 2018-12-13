@@ -2,11 +2,11 @@
   "name": "3dh",
   "version": "0.1.0",
   "private": true,
-  "homepage":"https://hhoareau.github.io/3dh/docs/index.html",
+  "homepage": "https://hhoareau.github.io/3dh/docs/index.html",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "deploy":"node ./node_modules/vue-gh-pages/index.js"
+    "deploy": "push-dir --dir=docs --branch=master --cleanup"
   },
   "dependencies": {
     "axios": "^0.18.0",
