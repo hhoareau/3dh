@@ -4,8 +4,8 @@
   "private": true,
   "homepage": "https://hhoareau.github.io/3dh/docs/index.html",
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "serve": "vue-cli-service serve --mode development",
+    "build": "vue-cli-service build --mode production",
     "deploy": "push-dir --dir=docs --branch=master --cleanup"
   },
   "dependencies": {
