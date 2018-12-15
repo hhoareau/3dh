@@ -114,9 +114,10 @@
                                                       Label Propagation
                                                   </md-option>
 
-
                                               </md-select>
                                           </md-field>
+                                          <div class="md-layout-item">
+                                          </div>
                                       </div>
                                   </div>
 

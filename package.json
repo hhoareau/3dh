@@ -4,13 +4,14 @@
   "private": true,
   "homepage": "https://hhoareau.github.io/3dh/docs/index.html",
   "scripts": {
-    "serve": "vue-cli-service serve --mode development",
+    "serve": "vue-cli-service serve",
     "build": "vue-cli-service build --mode production",
     "deploy": "push-dir --dir=docs --branch=master --cleanup"
   },
   "dependencies": {
     "axios": "^0.18.0",
     "register-service-worker": "^1.5.2",
+    "v-treeview": "^0.2.1",
     "vue": "^2.5.17",
     "vue-class-component": "^6.0.0",
     "vue-material": "^1.0.0-beta-10.2",
