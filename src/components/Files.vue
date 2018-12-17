@@ -1,11 +1,12 @@
 <template>
-  <div style="padding:0px;color:white;margin-left:10px;margin-right:10px;">
+  <div style="padding:0px;color:white;">
       <div style="margin:0px;" class="md-layout md-gutter md-alignment-top">
           <div class="md-layout-item md-xlarge-size-30 md-large-size-40 md-medium-size-40 md-small-size-100 md-xsmall-size-100">
-              <div class="md-alignment-top-center">
+              <div class="md-alignment-top-left">
                   <div class="md-layout">
-                      <div class="md-layout-item md-size-40 md-alignment-center-left">
-                          <span style="font-size: xx-large;">3DH</span>
+                      <div class="md-layout-item md-size-30 md-alignment-top-left text-left">
+                          <span style="font-size: xx-large;">3DH</span><br>
+                          3D & Data Analysis
                       </div>
                       <div style="font-size: large;font-weight: lighter;" class="md-layout-item md-size-40 md-alignment-center-left md-xlarge-size">
                           {{hourglass}}
@@ -405,7 +406,6 @@ export default class Files extends Vue {
     help(){
         this.openIn("./www/help.html","out");
     }
-
 
     clearList(){
         this.selected_file="";
