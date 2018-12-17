@@ -403,7 +403,7 @@ export default class Files extends Vue {
 
 
     help(){
-        this.openIn("./help.html","out");
+        this.openIn("./www/help.html","out");
     }
 
 

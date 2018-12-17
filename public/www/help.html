@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Documentation 3DH</title>
+    <!-- Bootstrap -->
+    <link href="css/bootstrap-4.0.0.css" rel="stylesheet">
+	  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+	  <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" media="screen">
+  </head>
+	
+	<style>
+
+	</style>
+	
+	
+  <body>
+	  
+	  
+	  <div class="container">
+ 
+    <div class="" id="accordion">
+        <div class="faqHeader">
+			<h1 class="display-2">
+				Questions fréquentes
+			</h1>	
+		</div>
+        <div class="card ">
+            <div class="card-header">
+                <h4 class="card-header">
+                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#faq1">
+						Quel est l'objectif de 3DH
+					</a>
+                </h4>
+            </div>
+            <div id="faq1" class="panel-collapse collapse in">
+                <div class="card-block">
+                    3DH permet l'étude d'un jeu de données via une représentation 3D interractive. Il est également compatible avec les graphes, fournissant la meilleur représentation possible compte tenu des relations existantes entre les noeuds.					
+                </div>
+            </div>
+        </div>
+		
+		
+		
+		
+		<div class="card ">
+            <div class="card-header">
+                <h4 class="card-header">
+                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#faq2">
+						Quelles sont les commandes utilisables pour manipuler une représentation 3D
+					</a>
+                </h4>
+            </div>
+            <div id="faq2" class="panel-collapse collapse in">
+                <div class="card-block">
+                       - <strong>'s'</strong> et SHIFT+'s' respectivement montre et cache toutes les mesures<br>
+                        - <strong>'m'</strong> et SHIFT+'m' opere un filtre sur les mesures pour les montrer / cacher<br>
+                        - <strong>'c'</strong> et SHIFT+'c' opere un filtre sur les clusters pour les montrer / cacher<br>
+                        - <strong>'a'</strong> et SHIFT+'a' engage une autorotation du graphique<br>
+                        - <strong>'w'</strong> centre la caméra sur l'échantillon pointé par la souris<br>
+                        - <strong>'v'</strong> et SHIFT+'v' démarre et stop un enregistrement video au format webm (lisible par vlc ou d'autres lecteurs)<br>
+                        - <strong>'+'</strong> et '-' écarte/réduit les mesure par changement d'échelle <br>
+                        - <strong>'e'</strong> export les données visibles au format CSV dans le presse papier<br>
+                        - <strong>'p'</strong> et SHIFT+'p' entoure les clusters visible (patatoides) <br>
+                        - <strong>'x'</strong> et SHIFT+'x' propagation des mesures visiblesh / cachées <br>
+                        - <strong>'o'</strong> entoure les clusters de référence<br>
+                        - <strong>'r'</strong> supprime définitivement le bruit (permet d'accéler la navigation)<br>
+                        - <strong>'k'</strong> connecte entre elles les mesures du même nom<br>
+                        - 'click' et 'SHIFT+click' montre / cache le cluster d'appartenance de la mesure<br>
+                        - 'double click' permet d'étudier un cluster en particulier<br>
+                        - 'ALT+click' permet grossis / réduit les mesures du même nom<br>
+                        - 'click droit' permet d'enregistrer la visu en format image;
+                </div>
+            </div>
+        </div>
+		
+		<div class="card ">
+            <div class="card-header">
+                <h4 class="card-header">
+                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#faq3">
+						Peut-on utiliser / partager la représentation 3D ?
+					</a>
+                </h4>
+            </div>
+            <div id="faq3" class="panel-collapse collapse in">
+                <div class="card-block">
+                       A tout moment il est possible :
+					    - d'enregistrer une vidéo de l'affichage 3D et des manipulations effectuées (voir
+					<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#faq2"> commandes disponibles</a>)
+						- un click droit sur le graphique permet d'enregistrer une image statique de la représentation affichée
+						- lorsqu'on on est en affichage plein écran il est possible d'envoyer le lien présent dans la barre du navigateur. Dans ce cas, le destinataire pourra également manipuler les données.
+                </div>
+            </div>
+        </div>
+		
+		<div class="card ">
+            <div class="card-header">
+                <h4 class="card-header">
+                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#faq4">
+						Comment "charger" un fichier ?
+					</a>
+                </h4>
+            </div>
+            <div id="faq4" class="panel-collapse collapse in">
+                <div class="card-block">
+                       Les données peuvent être contenu dans plusieurs types de fichier. Pour les données en fichier plat, 3DH reconnait le CSV et Excel. Pour les graphes, on utilisera le format GraphML (souvent noté par l'extension gml). Les graphes peuvent également être construit à partir de la matrice d'adjacence (au format CSV ou Excel) ou par un seuil sur la distance euclidienne entre les mesures.
+					
+						Les données sont récupérées soit directement à partir du client, soit par upload sur le serveur de calcul :
+					 		- dans un répertoire public : dans ce cas, tous les utilisateurs de 3DH y ont accès
+							- dans un répertoire privée, accessible uniquement par mot de passe
+                </div>
+            </div>
+        </div>
+		
+		<div class="card ">
+            <div class="card-header">
+                <h4 class="card-header">
+                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#faq6">
+						Quels indicateurs de performances du clustering sont calculés ?
+					</a>
+                </h4>
+            </div>
+            <div id="faq6" class="panel-collapse collapse in">
+                <div class="card-block">
+                       Lorsque plusieurs clustering sont effectués, il peut être pertinent de disposer d'un score pour chaque clustering. Ce score est calculé suivant sur la base des métriques disponibles dans la librairie Python <a href="https://scikit-learn.org/stable/modules/clustering.html#clustering-evaluation" target="_blank">SCIKIT-LEARN</a> 
+					
+                </div>
+            </div>
+        </div>
+		
+		<div class="card ">
+            <div class="card-header">
+                <h4 class="card-header">
+                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#faq8">
+						Peut on faire varier les paramétres des algorithme de clustering
+					</a>
+                </h4>
+            </div>
+            <div id="faq8" class="panel-collapse collapse in">
+                <div class="card-block">
+                       Il est possible de tester plusieurs combinaisons de paramétrages des algorithmes de clustering en séparant les valeurs des paramètres par une "," (le séparateur de décimal étant le ".")
+                </div>
+            </div>
+        </div>
+		
+		<div class="card ">
+            <div class="card-header">
+                <h4 class="card-header">
+                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#faq5">
+						Comment paramétrer la représentation 3D
+					</a>
+                </h4>
+            </div>
+            <div id="faq5" class="panel-collapse collapse in">
+                <div class="card-block">
+                       Plusieurs paramètres modifie la présentation des données.
+						- no text: permet de supprimer le texte qui accompagne la représentation graphique
+						- no metric : permet de ne pas calculer les métriques notamment pour gagner du temps sur la représentation
+						- add property : permet d'ajouter des informations sur chaque mesure directement dans le graphique. Si ces informations sont numériques, elles peuvent être utilisé pour modifier le diamètre des sphéres dans la représentation graphique.
+						- rotate : va déclencher une rotation du graphique dés son affichage
+                </div>
+            </div>
+        </div>
+	</div>
+		
+		
+	  
+	 
+    <footer class="text-center">
+      <div class="container">
+        <div class="row">
+          <div class="col-12">
+            <p>Copyright © MyWebsite. All rights reserved.</p>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="js/jquery-3.2.1.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap-4.0.0.js"></script>
+  </body>
+</html>
