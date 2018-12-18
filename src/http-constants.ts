@@ -7,10 +7,12 @@ if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
     baseURL = 'https://ss.shifumix.com:5000/'
 }
 
-console.log("root_api"+baseURL);
 
-export const HTTP = axios.create({
-        baseURL: baseURL
-});
+
+export const HTTP = axios.create({baseURL: baseURL});
 
 export const ROOT_API=baseURL;
+export const VERSION=process.env.version;
+
+console.log("root_api"+baseURL);
+console.log("version"+VERSION);

@@ -6,7 +6,8 @@ import App from '../node_modules/@babel/App.vue';
 import './registerServiceWorker';
 Vue.use(VueMaterial);
 Vue.config.productionTip = false;
+Vue.config.silent = true;
 new Vue({
-    render: h => h(App),
+    render: h => h(App)
 }).$mount('#app');
 //# sourceMappingURL=main.js.map

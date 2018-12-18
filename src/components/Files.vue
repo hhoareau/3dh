@@ -4,9 +4,11 @@
           <div class="md-layout-item md-xlarge-size-30 md-large-size-40 md-medium-size-40 md-small-size-100 md-xsmall-size-100">
               <div class="md-alignment-top-left">
                   <div class="md-layout">
-                      <div class="md-layout-item md-size-30 md-alignment-top-left text-left">
-                          <span style="font-size: xx-large;">3DH</span><br>
-                          3D & Data Analysis
+                      <div class="md-layout-item md-size-40 md-alignment-top-center text-center">
+                          <div class="md-layout-item">
+                              <span style="font-size: xx-large;">3DH {{version}}</span>
+                              3D & Data Analysis
+                          </div>
                       </div>
                       <div style="font-size: large;font-weight: lighter;" class="md-layout-item md-size-40 md-alignment-center-left md-xlarge-size">
                           {{hourglass}}
@@ -18,8 +20,6 @@
                   <md-snackbar :md-position="centered" :md-duration="4000" :md-active.sync="toast_message.length>0">
                       {{toast_message}}
                   </md-snackbar>
-
-                  <br><br>
                   <md-card>
                       <md-card-header>
                           <div class="md-layout">

@@ -1,7 +1,15 @@
 {
-  "name": "3dh",
+  "name": "3DH",
   "version": "0.1.0",
   "private": true,
+  "description": "An interface to use the DockerDataAPI",
+  "license": "MIT",
+  "keywords": ["data","clustering","ai"],
+  "author": {
+      "name": "Herve Hoareau",
+      "email": "rv@f80.fr",
+      "url": "https://f80.fr"
+    },
   "homepage": "https://hhoareau.github.io/3dh/docs/index.html",
   "scripts": {
     "serve": "vue-cli-service serve",
