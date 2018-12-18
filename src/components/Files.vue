@@ -131,6 +131,8 @@
                                       </div>
                                   </div>
 
+                                  <md-button class="md-raised md-secondary" v-show="type=='data' && hourglass.length==0" @click="reduce()">Reduce</md-button>
+
                               </md-tab>
                               <md-tab v-if="type=='graph'" id="tab-graph" md-label="Graph" to="/components/tabs/graph">
                                   <div class="md-layout md-gutter">
@@ -163,6 +165,7 @@
                                     <div class="md-layout">
                                       <div class="md-layout-item md-size-30">
                                           <md-button v-if="type=='data'" class="md-raised md-secondary" @click="convertToSubData()">To subData</md-button>
+                                          <md-button v-if="type=='graph'" class="md-raised md-secondary" @click="convertGraphToData()">To data</md-button>
                                       </div>
 
                                   </div>
@@ -317,6 +320,10 @@ export default class Files extends Vue {
       this.openIn(this.showLink({autorotate:true,pca:1}),'out')
     }
 
+    reduce(){
+        this.openIn(this.showLink({autorotate:false,pca:1},"reduce"))
+    }
+
     randomFile(){
         this.selected_file=this.measures[Math.trunc(Math.random()*this.measures.length)];
     }
@@ -374,6 +381,11 @@ export default class Files extends Vue {
         this.execCommand("E");
     }
 
+    convertGraphToData(){
+        var url=ROOT_API+"todata/"+this.selected_file;
+        this.openIn(url);
+    }
+
 
     /**
      * Mise à jour des données sources
@@ -417,7 +429,7 @@ export default class Files extends Vue {
     }
 
 
-    showLink(options:any={}):string {
+    showLink(options:any={},service="graph"):string {
         var url_file=this.selected_file;
         if(url_file.length==0)return("");
 
@@ -439,7 +451,7 @@ export default class Files extends Vue {
                 this.algo="NO";
             }
 
-            rc=ROOT_API+"job/"+url_file+"/"+this.algo+"/"+sParam+"?filter="+this.format;
+            rc=ROOT_API+"job/"+url_file+"/"+this.algo+"/"+sParam+"/"+service+"?filter="+this.format;
         }
 
         console.log("ouverture de "+rc);
@@ -493,7 +505,7 @@ export default class Files extends Vue {
         if(url.length>0){
             for(var k=0;k<15;k++)url=url.replace("=true","=True").replace("=false","=False"); //Syntaxe imposée par python
 
-                this.hourglass="Treatment";
+                if(target!="_blank")this.hourglass="Treatment";
 
                 window.open(url,target);
                 document.getElementsByName("out")[0].addEventListener('load', ()=>{
