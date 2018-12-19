@@ -4,12 +4,16 @@
   "private": true,
   "description": "An interface to use the DockerDataAPI",
   "license": "MIT",
-  "keywords": ["data","clustering","ai"],
+  "keywords": [
+    "data",
+    "clustering",
+    "ai"
+  ],
   "author": {
-      "name": "Herve Hoareau",
-      "email": "rv@f80.fr",
-      "url": "https://f80.fr"
-    },
+    "name": "Herve Hoareau",
+    "email": "rv@f80.fr",
+    "url": "https://f80.fr"
+  },
   "homepage": "https://hhoareau.github.io/3dh/docs/index.html",
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -18,12 +22,15 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "https": "^1.0.0",
+    "https-agent": "^1.0.0",
     "register-service-worker": "^1.5.2",
     "v-treeview": "^0.2.1",
     "vue": "^2.5.17",
     "vue-class-component": "^6.0.0",
     "vue-material": "^1.0.0-beta-10.2",
-    "vue-property-decorator": "^7.0.0"
+    "vue-property-decorator": "^7.0.0",
+    "vue-router": "^3.0.2"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.2.0",

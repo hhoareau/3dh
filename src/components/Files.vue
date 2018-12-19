@@ -75,8 +75,8 @@
                           </div>
                       </md-card-header>
                       <md-card-content>
-                          <md-tabs md-sync-route>
-                              <md-tab id="tab-cluster" md-label="Clustering" to="/components/tabs/Clustering">
+                          <md-tabs>
+                              <md-tab id="tab-cluster" md-label="Clustering">
                                   <div class="md-layout md-gutter">
                                       <div class="md-layout-item">
                                           <md-field>
@@ -134,7 +134,7 @@
                                   <md-button class="md-raised md-secondary" v-show="type=='data' && hourglass.length==0" @click="reduce()">Reduce</md-button>
 
                               </md-tab>
-                              <md-tab v-if="type=='graph'" id="tab-graph" md-label="Graph" to="/components/tabs/graph">
+                              <md-tab v-if="type=='graph'" id="tab-graph" md-label="Graph">
                                   <div class="md-layout md-gutter">
                                       <div class="md-layout-item">
                                           <md-field>
@@ -149,7 +149,7 @@
                                   </div>
 
                               </md-tab>
-                              <md-tab id="tab-convert" md-label="Convert" to="/components/tabs/converting">
+                              <md-tab id="tab-convert" md-label="Convert">
                                   <div class="md-layout" v-if="type=='data'">
                                       <div class="md-layout-item md-size-30">
                                           <md-button class="md-raised md-secondary" @click="convertToGraph()">To graph</md-button>
@@ -208,6 +208,7 @@
                       </md-card-content>
                   </md-card>
               </div>
+              Server : {{$route.params.api}}
           </div>
           <div class="md-layout-item md-xlarge-size-70 md-large-size-60 md-medium-size-60 md-small-size-100 md-xsmall-size-100">
               <!-- Toolbar -->
@@ -278,20 +279,23 @@ export default class Files extends Vue {
     autorotate:string="1";
     pca:number=1;
     type:string="data";
-    root_api:string=ROOT_API;
     format:string="";
     lastRender:number=0;
     hRender:any=null;
     hourglass:string="";
     rows=0;
+    server_api:string=ROOT_API;
 
   mounted(){
+      if(this.$route.params["api"]!=null)this.server_api=this.$route.params["api"];
+      if(!this.server_api.startsWith("http"))this.server_api="http://"+this.server_api;
+      if(!this.server_api.endsWith(":5000"))this.server_api=this.server_api+":5000";
       this.refreshFiles();
   }
 
   refreshFiles(){
       this.hourglass="Files listing";
-      HTTP.get('/datas/measures')
+      HTTP.get(this.server_api+'/datas/measures')
           .then(response => {
               this.measures = [];
 
@@ -330,7 +334,7 @@ export default class Files extends Vue {
 
     deleteFile(){
         this.hourglass="File deleting";
-        HTTP.delete("/datas/measure/"+this.selected_file).then(r=>{
+        HTTP.delete(this.server_api+"/datas/measure/"+this.selected_file).then(r=>{
             this.refreshFiles();
         }).catch(e=>{
             this.hourglass="";
@@ -354,6 +358,7 @@ export default class Files extends Vue {
     selectFile(name:string=""){
       if(name.length>0)this.selected_file=name;
       if(this.selected_file.length>0){
+          this.treatment="NOTREATMENT::::";
           this.updateData(this.selected_file,()=>{
               this.preview();
           });
@@ -371,7 +376,7 @@ export default class Files extends Vue {
 
     convertToGraph(){
       this.hourglass="Converting to graphe";
-      HTTP.get(ROOT_API+"tograph/"+this.selected_file+"?distance="+this.distance).then((r:any)=>{
+      HTTP.get(this.server_api+"/tograph/"+this.selected_file+"?distance="+this.distance).then((r:any)=>{
           this.selected_file=r.data;
           this.refreshFiles();
       })
@@ -382,7 +387,7 @@ export default class Files extends Vue {
     }
 
     convertGraphToData(){
-        var url=ROOT_API+"todata/"+this.selected_file;
+        var url=this.server_api+"todata/"+this.selected_file;
         this.openIn(url);
     }
 
@@ -396,7 +401,7 @@ export default class Files extends Vue {
 
         if(url.replace("file:","").length>0){
             url=encodeURIComponent(url);
-            var url_analyse=ROOT_API+"analyse?format=json&url="+url;
+            var url_analyse=this.server_api+"/analyse?format=json&url="+url;
             this.hourglass="Data analyzing";
             HTTP.get(url_analyse).then((r:any)=>{
                 this.hourglass="";
@@ -439,7 +444,7 @@ export default class Files extends Vue {
         if(url_file.startsWith("http")) //Transformation pour assurer la transmission au serveur
             url_file="b64="+btoa(url_file);
 
-        var rc=ROOT_API+"graph/"+url_file+"/"+this.algo_loc+"?algo_comm="+this.algo;
+        var rc=this.server_api+"/graph/"+url_file+"/"+this.algo_loc+"?algo_comm="+this.algo;
         if(this.type=="data"){
             var sParam="";
             this.params.forEach((p)=>{
@@ -451,7 +456,7 @@ export default class Files extends Vue {
                 this.algo="NO";
             }
 
-            rc=ROOT_API+"job/"+url_file+"/"+this.algo+"/"+sParam+"/"+service+"?filter="+this.format;
+            rc=this.server_api+"/job/"+url_file+"/"+this.algo+"/"+sParam+"/"+service+"?filter="+this.format;
         }
 
         console.log("ouverture de "+rc);
@@ -526,7 +531,7 @@ export default class Files extends Vue {
       fd.append("files",f);
       this.raz();
       this.hourglass="File uploading";
-        HTTP.post("/datas/measure/"+f.name+"?public="+type,fd).then(r => {
+        HTTP.post(this.server_api+"/datas/measure/"+f.name+"?public="+type,fd).then(r => {
                 this.measures.push(f.name);
                 this.selectFile(f.name);
                 this.hourglass="";
