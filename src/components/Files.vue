@@ -5,8 +5,8 @@
               <div class="md-alignment-top-left">
                   <div class="md-layout">
                       <div class="md-layout-item md-size-40 md-alignment-top-center text-center">
-                          <div class="md-layout-item">
-                              <span style="font-size: xx-large;">3DH {{version}}</span>
+                          <div class="md-layout-item" style="margin-bottom: 10px;">
+                              <span style="font-size: xx-large;">3DH</span>
                               3D & Data Analysis
                           </div>
                       </div>
@@ -25,6 +25,7 @@
                           <div class="md-layout">
                               <div class="md-layout-item"><div class="md-title" style="text-align: left;">Datas / Files</div></div>
                               <div class="md-layout-item" style="text-align: right;">
+                                  <md-button class="md-raised md-secondary" @click="analyseClipboard()">Clipboard</md-button>&nbsp;
                                   <md-button class="md-raised md-primary" @click="help()">Help</md-button>
                               </div>
                           </div>
@@ -46,18 +47,17 @@
                               </div>
                           </div>
 
-                          <div class="md-layout">
-                              <div class="md-layout-item">
+                          <div class="md-layout md-gutter md-alignment-center-center">
+                              <div class="md-layout-item md-layout-item md-medium-size-25 md-small-size-33 md-xsmall-size-50">
                                   <label class="md-button md-primary md-alignment-center" for="_public_file"><md-icon>backup</md-icon>&nbsp;&nbsp;Public</label>
                                   <md-file style="visibility: hidden" id="_public_file" @md-change="upload($event,true)"/>
                               </div>
-                              <div class="md-layout-item">
+                              <div class="md-layout-item md-layout-item md-medium-size-25 md-small-size-33 md-xsmall-size-50">
                                   <label class="md-button md-primary" for="_private_file"><md-icon>backup</md-icon>&nbsp;&nbsp;Private</label>
                                   <md-file style="visibility: hidden" id="_private_file" @md-change="upload($event,false)"/>
                               </div>
                           </div>
 
-                          <md-button class="md-raised md-secondary" @click="analyseClipboard()">Analyse Clipboard</md-button>
 
                           <FileFormat v-if="selected_file.length>0 && type=='data'" v-on:format="updateFormat($event)" v-bind:cols="data_cols"></FileFormat>
 
@@ -150,9 +150,9 @@
 
                               </md-tab>
                               <md-tab id="tab-convert" md-label="Convert" to="/components/tabs/converting">
-                                  <div class="md-layout">
+                                  <div class="md-layout" v-if="type=='data'">
                                       <div class="md-layout-item md-size-30">
-                                          <md-button v-if="type=='data'" class="md-raised md-secondary" @click="convertToGraph()">To graph</md-button>
+                                          <md-button class="md-raised md-secondary" @click="convertToGraph()">To graph</md-button>
                                       </div>
                                       <div class="md-layout-item md-size-70">
                                           <md-field>
