@@ -386,7 +386,7 @@ export default class Files extends Vue {
     }
 
     convertGraphToData(){
-        var url=this.server_api+"todata/"+this.selected_file;
+        var url=this.server_api+"/todata/"+this.selected_file;
         this.openIn(url);
     }
 
@@ -532,9 +532,14 @@ export default class Files extends Vue {
       this.hourglass="File uploading";
         HTTP.post(this.server_api+"/datas/measure/"+f.name+"?public="+type,fd)
             .then(r => {
-                this.measures.push(f.name);
-                this.selectFile(f.name);
-                this.hourglass="";})
+                if(f.name.endsWith("zip"))
+                    this.refreshFiles();
+                else{
+                    this.measures.push(f.name);
+                    this.selectFile(f.name);
+                    this.hourglass="";
+                }
+            })
             .catch((r)=>{this.hourglass="";});
     }
 
