@@ -208,7 +208,7 @@
                       </md-card-content>
                   </md-card>
               </div>
-              Server : {{$route.params.api}}
+              <span v-if="$route.params.api!=null">Server: {{$route.params.api}}</span>
           </div>
           <div class="md-layout-item md-xlarge-size-70 md-large-size-60 md-medium-size-60 md-small-size-100 md-xsmall-size-100">
               <!-- Toolbar -->
@@ -321,11 +321,14 @@ export default class Files extends Vue {
     }
 
     preview(){
-      this.openIn(this.showLink({autorotate:true,pca:1}),'out')
+      setTimeout(()=>{
+          if(this.hourglass.length==0)
+              this.openIn(this.showLink({autorotate:true,pca:1}),'out');
+      },1000);
     }
 
     reduce(){
-        this.openIn(this.showLink({autorotate:false,pca:1},"reduce"))
+        this.openIn(this.showLink({autorotate:false,pca:1},"reduce"));
     }
 
     randomFile(){
@@ -348,7 +351,6 @@ export default class Files extends Vue {
       setTimeout(()=>{this.toast_message=""},delayInSec*1000);
     }
 
-
     raz(){
         this.selected_file="";
         this.algo="";
@@ -359,18 +361,15 @@ export default class Files extends Vue {
       if(name.length>0)this.selected_file=name;
       if(this.selected_file.length>0){
           this.treatment="NOTREATMENT::::";
-          this.updateData(this.selected_file,()=>{
-              this.preview();
-          });
+          this.updateData(this.selected_file,()=>{this.preview();});
       }
-
     }
 
     analyseClipboard(){
       var nav:any=window.navigator;
         nav.clipboard.readText().then((text:string) => {
             if(text.startsWith("http"))
-                this.updateData(text);
+                this.updateData(text,()=>{this.preview()});
         });
     }
 
@@ -531,13 +530,12 @@ export default class Files extends Vue {
       fd.append("files",f);
       this.raz();
       this.hourglass="File uploading";
-        HTTP.post(this.server_api+"/datas/measure/"+f.name+"?public="+type,fd).then(r => {
+        HTTP.post(this.server_api+"/datas/measure/"+f.name+"?public="+type,fd)
+            .then(r => {
                 this.measures.push(f.name);
                 this.selectFile(f.name);
-                this.hourglass="";
-            }).catch((r)=>{
-                this.hourglass="";
-        });
+                this.hourglass="";})
+            .catch((r)=>{this.hourglass="";});
     }
 
 }
