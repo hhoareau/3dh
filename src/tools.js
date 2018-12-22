@@ -1,7 +1,7 @@
 function cutParams(params) {
     var ps = {};
     var keys = [];
-    params.split("&").forEach((param) => {
+    params.split("&").forEach(function (param) {
         keys.push(param.split("=")[0]);
         ps[param.split("=")[0]] = param.split("=")[1].split(",");
     });
@@ -11,15 +11,15 @@ function cutParams(params) {
     ps["sup"] = [0];
     ps["sup2"] = [0];
     ps["sup3"] = [0];
-    let l_p = [];
+    var l_p = [];
     for (var i = 0; i < ps[keys[0]].length; i++)
         for (var j = 0; j < ps[keys[1]].length; j++)
             for (var k = 0; k < ps[keys[2]].length; k++)
                 for (var l = 0; l < ps[keys[3]].length; l++) {
-                    let c1 = ps[keys[0]][i];
-                    let c2 = ps[keys[1]][j];
-                    let c3 = ps[keys[2]][k];
-                    let c4 = ps[keys[3]][l];
+                    var c1 = ps[keys[0]][i];
+                    var c2 = ps[keys[1]][j];
+                    var c3 = ps[keys[2]][k];
+                    var c4 = ps[keys[3]][l];
                     var obj = {};
                     obj[keys[0]] = c1;
                     if (c2 != null)
@@ -31,7 +31,7 @@ function cutParams(params) {
                     l_p.push(obj);
                 }
     var rc = [];
-    l_p.forEach((val) => {
+    l_p.forEach(function (val) {
         var s = "";
         for (var p in val)
             s = s + p + "=" + val[p] + "&";
@@ -39,7 +39,8 @@ function cutParams(params) {
     });
     return rc;
 }
-function showlink(document, multiple = false) {
+function showlink(document, multiple) {
+    if (multiple === void 0) { multiple = false; }
     var domain = document.location.protocol + document.location.host;
     debugger;
     if (!domain.endWitdh("/"))
@@ -62,10 +63,10 @@ function showlink(document, multiple = false) {
         params = params.substr(1, params.length);
     var job_name = "job" + new Date().getTime();
     if (!multiple) {
-        let url_file = file;
+        var url_file = file;
         if (file.startsWith("http"))
             url_file = "b64=" + btoa(file);
-        let url = "http://" + domain + "job/" + url_file + "/" + algo + "/" + params + "?&pca=" + pca;
+        var url = "http://" + domain + "job/" + url_file + "/" + algo + "/" + params + "?&pca=" + pca;
         if (file.endsWith(".gml") || file.endsWith(".gexf") || file.endsWith(".gephi") || file.endsWith(".graphml")) {
             url = "http://" + domain + "graph/" + url_file + "/fr?algo_comm=gn";
         }
@@ -93,12 +94,12 @@ function showlink(document, multiple = false) {
     }
     else {
         //Traitement complexe
-        let urls = [];
-        cutParams(params).forEach((p) => {
-            let url = "http://" + domain + "job/" + file + "/" + algo + "/" + p + "?pca=" + pca + "&notif=" + notif;
-            urls.push(url);
+        var urls_1 = [];
+        cutParams(params).forEach(function (p) {
+            var url = "http://" + domain + "job/" + file + "/" + algo + "/" + p + "?pca=" + pca + "&notif=" + notif;
+            urls_1.push(url);
         });
-        return urls;
+        return urls_1;
     }
 }
 function showParameters(document) {
@@ -118,7 +119,8 @@ export function testDownload(document) {
         file = "/datas/" + file;
     window.open(file, "blank_");
 }
-export function hourglass(document, show = true) {
+export function hourglass(document, show) {
+    if (show === void 0) { show = true; }
     if (show)
         document.getElementById("hourglass").style.visibility = "visible";
     else
@@ -127,8 +129,9 @@ export function hourglass(document, show = true) {
 /**
  * Envoi les fichiers sur le serveur via l'api
  */
-export function postFile(document, _public = false) {
-    let file = document.getElementById("file").files[0];
+export function postFile(document, _public) {
+    if (_public === void 0) { _public = false; }
+    var file = document.getElementById("file").files[0];
     var formData = new FormData();
     formData.append('files', file);
     hourglass(document);
@@ -136,15 +139,15 @@ export function postFile(document, _public = false) {
         method: "POST",
         body: formData
     })
-        .then(response => {
+        .then(function (response) {
         return response.json();
         hourglass(false);
     })
-        .then(r => {
+        .then(function (r) {
         document.getElementById("url").value = file.name;
         hourglass(false);
         refreshFiles(document);
-    }).catch((r) => {
+    }).catch(function (r) {
         alert("Pas de connexion" + r);
     });
 }
@@ -176,12 +179,12 @@ function runAll(url, document) {
     var i = 0;
     var n_jobs = 0;
     clear_log(document);
-    var handle = setInterval(() => {
+    var handle = setInterval(function () {
         if (n_jobs < max_jobs) {
             hourglass(true);
             n_jobs++;
             log(document, "On lance un nouveau job." + n_jobs + " en cours");
-            fetch(url + "&nometrics=True").then((res) => { return res; }).then((res) => {
+            fetch(url + "&nometrics=True").then(function (res) { return res; }).then(function (res) {
                 i++;
                 n_jobs--;
                 log(document, "Fin d'un job." + n_jobs + " actifs");
@@ -195,7 +198,7 @@ function runAll(url, document) {
                 else {
                     document.getElementById("nTreatments").innerHTML = (urls.length - i) + " treatments" + waiting;
                 }
-            }).catch(() => {
+            }).catch(function () {
                 log(document, "probable saturation du serveur. Diminuer le nombre de taches simultanés");
                 i = url.length;
                 document.getElementById("nTreatments").innerHTML = "treatment abort";
@@ -207,7 +210,7 @@ var hLog = null;
 function showLog() {
     if (hLog != null)
         clearInterval(hLog);
-    hLog = setInterval(() => {
+    hLog = setInterval(function () {
         window.open("/log", "out");
     }, 10000);
 }
@@ -223,14 +226,14 @@ function analyseFile(document) {
 }
 function openlink(document) {
     window.open("./static/wait.html?mail=" + document.getElementById("email").value, "out");
-    setTimeout(() => {
+    setTimeout(function () {
         window.open(showlink(document, false)[0], "out");
     }, 500);
 }
 function refreshFiles(document) {
-    fetch("/datas/measures").then((r) => { return r.json(); }).then((lst) => {
-        let rc = [];
-        lst.forEach((f) => {
+    fetch("/datas/measures").then(function (r) { return r.json(); }).then(function (lst) {
+        var rc = [];
+        lst.forEach(function (f) {
             if (!f.startsWith("temp"))
                 rc.push("<option>" + f + "</option>");
         });

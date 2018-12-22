@@ -28,6 +28,7 @@
     "v-treeview": "^0.2.1",
     "vue": "^2.5.17",
     "vue-class-component": "^6.0.0",
+    "vue-json-tree-view": "^2.1.4",
     "vue-material": "^1.0.0-beta-10.2",
     "vue-property-decorator": "^7.0.0",
     "vue-router": "^3.0.2"

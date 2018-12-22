@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="./treeview/jsonview.css">
+    <script type="text/javascript" src="./treeview/jsonview.js"></script>
+    <title>Title</title>
+</head>
+<body>
+<div class="root"></div>
+<script type="text/javascript">
+    addEventListener("message",(evt)=>{
+        if(Object.keys(evt.data).length==0)
+            document.getElementsByClassName("root")[0].innerHTML="";
+        else{
+            debugger
+            jsonView.format(evt.data, '.root');
+        }
+
+    });
+</script>
+</body>
+</html>

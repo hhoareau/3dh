@@ -9,7 +9,6 @@ import App from '../node_modules/@babel/App.vue'
 import './registerServiceWorker'
 import Files from "./components/Files.vue"
 
-
 Vue.use(VueMaterial);
 Vue.use(VueRouter)
 Vue.config.productionTip = false;

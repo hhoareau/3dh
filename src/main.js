@@ -10,15 +10,15 @@ Vue.use(VueMaterial);
 Vue.use(VueRouter);
 Vue.config.productionTip = false;
 Vue.config.silent = true;
-const router = new VueRouter({
+var router = new VueRouter({
     mode: 'history',
     routes: [
         { path: '/', component: Files },
         { path: '/:api', component: Files }
     ]
 });
-const app = new Vue({
-    router,
-    render: h => h(App)
+var app = new Vue({
+    router: router,
+    render: function (h) { return h(App); }
 }).$mount('#app');
 //# sourceMappingURL=main.js.map

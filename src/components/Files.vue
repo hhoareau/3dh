@@ -247,7 +247,12 @@
                   </div>
 
               </md-toolbar>
-              <iframe style="padding:10px;background-color:lightgrey;border: none;min-height: 800px;" width="100%" height="1000" id="doc" name="out"></iframe>
+              <iframe style="padding:10px;background-color:lightgrey;border: none;min-height: 800px;height: 90vh" width="100%" id="doc" name="out"></iframe>
+              <iframe
+                      style="padding:10px;background-color:lightgrey;border: none;min-height: 800px;height: 300px"
+                      width="100%" id="clusterView"
+                      src="/treeview.html">
+              </iframe>
           </div>
       </div>
 
@@ -259,6 +264,7 @@
 import {HTTP,ROOT_API} from '../http-constants'
 import { Component, Vue } from 'vue-property-decorator';
 import FileFormat from "./FileFormat.vue"
+
 
 @Component({name:"Files",components:{FileFormat}})
 export default class Files extends Vue {
@@ -291,6 +297,17 @@ export default class Files extends Vue {
       if(!this.server_api.startsWith("http"))this.server_api="http://"+this.server_api;
       if(!this.server_api.endsWith(":5000"))this.server_api=this.server_api+":5000";
       this.refreshFiles();
+
+      addEventListener("message",(evt:any)=> {
+          if(typeof(evt.data)=="string"){
+              if (evt.data.startsWith("message:")) this.hourglass = evt.data.replace("message:", "");
+              if (evt.data == "event:loaded"){
+                  this.hourglass="";
+                  this.showClusters();
+              }
+          }
+      });
+
   }
 
   refreshFiles(){
@@ -320,10 +337,22 @@ export default class Files extends Vue {
       this.format="index:"+evt.index+"_measures:"+evt.measure+"_properties:"+evt.prop;
     }
 
+    showClusters(){
+        var url=this.showLink({pca:0},"clusters");
+        fetch(url).then((r)=>{return r.json()})
+            .then((r)=>{
+                var iframe:any=document.getElementById("clusterView");
+                iframe.contentWindow.postMessage(r[0]);
+            });
+    }
+
     preview(){
       setTimeout(()=>{
-          if(this.hourglass.length==0)
-              this.openIn(this.showLink({autorotate:true,pca:1}),'out');
+          if(this.hourglass.length==0){
+              var iframe:any=document.getElementById("clusterView");
+              iframe.contentWindow.location.reload();
+              this.openIn(this.showLink({autorotate:true,pca:1}),'out')
+          }
       },1000);
     }
 
@@ -508,20 +537,11 @@ export default class Files extends Vue {
     openIn(url:string,target="_blank",func:any=null){
         if(url.length>0){
             for(var k=0;k<15;k++)url=url.replace("=true","=True").replace("=false","=False"); //Syntaxe imposée par python
-
-                if(target!="_blank")this.hourglass="Treatment";
-
-                window.open(url,target);
-                document.getElementsByName("out")[0].addEventListener('load', ()=>{
-                    this.hourglass="";
-                    if(func!=null)func();
-                }, false);
-
-
+            this.hourglass="Treatment";
+            window.open(url,target);
             this.lastRender=new Date().getTime();
         }
     }
-
 
     upload(evt:any,type:boolean){
       let f:File=evt[0];
@@ -542,8 +562,9 @@ export default class Files extends Vue {
             })
             .catch((r)=>{this.hourglass="";});
     }
-
 }
+
+
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
