@@ -5,16 +5,16 @@
               <div class="md-alignment-top-left">
                   <div class="md-layout">
                       <div class="md-layout-item md-size-40 md-alignment-top-center text-center">
-                          <div class="md-layout-item" style="margin-bottom: 10px;">
-                              <span style="font-size: xx-large;">3DH</span>
+                          <div class="md-layout-item" style="margin-bottom: 10px;font-size: x-small;">
+                              <span style="font-size: x-large;">3DH</span>
                               3D & Data Analysis
                           </div>
                       </div>
-                      <div style="font-size: large;font-weight: lighter;" class="md-layout-item md-size-40 md-alignment-center-left md-xlarge-size">
+                      <div style="font-size: small;font-weight: lighter;" class="md-layout-item md-size-40 md-alignment-center-left md-xlarge-size">
                           {{hourglass}}
                       </div>
-                      <div style="font-size: small;" class="md-layout-item md-size-20 md-alignment-centered">
-                          <md-progress-spinner v-if="hourglass.length>0" :md-diameter="40" :md-stroke="5" md-mode="indeterminate"></md-progress-spinner>
+                      <div class="md-layout-item md-size-20 md-alignment-centered">
+                          <md-progress-spinner v-if="hourglass.length>0" :md-diameter="30" :md-stroke="5" md-mode="indeterminate"></md-progress-spinner>
                       </div>
                   </div>
                   <md-snackbar :md-position="centered" :md-duration="4000" :md-active.sync="toast_message.length>0">
@@ -300,6 +300,7 @@ export default class Files extends Vue {
 
       addEventListener("message",(evt:any)=> {
           if(typeof(evt.data)=="string"){
+              console.log("Message:"+evt.data);
               if (evt.data.startsWith("message:")) this.hourglass = evt.data.replace("message:", "");
               if (evt.data == "event:loaded"){
                   this.hourglass="";
@@ -349,6 +350,7 @@ export default class Files extends Vue {
     preview(){
       setTimeout(()=>{
           if(this.hourglass.length==0){
+              this.hourglass="preview treatment";
               var iframe:any=document.getElementById("clusterView");
               iframe.contentWindow.location.reload();
               this.openIn(this.showLink({autorotate:true,pca:1}),'out')
@@ -537,7 +539,6 @@ export default class Files extends Vue {
     openIn(url:string,target="_blank",func:any=null){
         if(url.length>0){
             for(var k=0;k<15;k++)url=url.replace("=true","=True").replace("=false","=False"); //Syntaxe imposée par python
-            this.hourglass="Treatment";
             window.open(url,target);
             this.lastRender=new Date().getTime();
         }
