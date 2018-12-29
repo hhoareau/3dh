@@ -134,21 +134,8 @@
                                   <md-button class="md-raised md-secondary" v-show="type=='data' && hourglass.length==0" @click="reduce()">Reduce</md-button>
 
                               </md-tab>
-                              <md-tab v-if="type=='graph'" id="tab-graph" md-label="Graph">
-                                  <div class="md-layout md-gutter">
-                                      <div class="md-layout-item">
-                                          <md-field>
-                                              <md-select v-model="algo_loc">
-                                                  <md-option value="fr">Fruchterman Reingold</md-option>
-                                                  <md-option value="Circular">circular</md-option>
-                                                  <md-option value="Spectral">spectral</md-option>
-                                                  <md-option value="Random">random</md-option>
-                                              </md-select>
-                                          </md-field>
-                                      </div>
-                                  </div>
 
-                              </md-tab>
+
                               <md-tab id="tab-convert" md-label="Convert">
                                   <div class="md-layout" v-if="type=='data'">
                                       <div class="md-layout-item md-size-30">
@@ -162,17 +149,35 @@
                                       </div>
                                   </div>
 
-                                    <div class="md-layout">
+                                  <div class="md-layout">
                                       <div class="md-layout-item md-size-30">
                                           <md-button v-if="type=='data'" class="md-raised md-secondary" @click="convertToSubData()">To subData</md-button>
                                           <md-button v-if="type=='graph'" class="md-raised md-secondary" @click="convertGraphToData()">To data</md-button>
                                       </div>
 
                                   </div>
-
-
                               </md-tab>
+
+
+
+                              <md-tab v-if="type=='graph'" id="tab-graph" md-label="Graph">
+                                  <div class="md-layout md-gutter">
+                                      <div class="md-layout-item">
+                                          <md-field>
+                                              <md-select v-model="algo_loc">
+                                                  <md-option value="fr">Fruchterman Reingold</md-option>
+                                                  <md-option value="Circular">circular</md-option>
+                                                  <md-option value="Spectral">spectral</md-option>
+                                                  <md-option value="Random">random</md-option>
+                                              </md-select>
+                                          </md-field>
+                                      </div>
+                                  </div>
+                              </md-tab>
+
                           </md-tabs>
+
+
                       </md-card-content>
                   </md-card>
                   <br>
@@ -185,13 +190,14 @@
                       </md-card-header>
                       <md-card-content>
                           <div class="md-layout">
-                              <div class="md-layout-item md-size-20">
+                              <div class="md-layout-item md-size-40">
                                   <md-field>
                                       <label>Nb View</label>
                                       <md-input type="number" v-model="pca"></md-input>
                                   </md-field>
                               </div>
-                              <div class="md-layout-item md-size-20">
+                              <div class="md-layout-item md-size-20"></div>
+                              <div class="md-layout-item md-size-40">
                                   <md-field>
                                       <label>Limit</label>
                                       <md-input type="number" v-model="limit"></md-input>
@@ -202,7 +208,7 @@
                               <div class="md-layout-item"><md-checkbox v-model="notext" value="1">No text</md-checkbox></div>
                               <div class="md-layout-item"><md-checkbox v-model="nometrics" value="1">No metrics</md-checkbox></div>
                               <div class="md-layout-item"><md-checkbox v-model="add_property" value="1">Add Property</md-checkbox></div>
-                              <div class="md-layout-item"><md-checkbox v-model="autorotate" value="1">Rotate</md-checkbox></div>
+                              <div class="md-layout-item"><md-checkbox v-model="autorotate" value="1">Auto Rotate</md-checkbox></div>
                           </div>
 
                       </md-card-content>
@@ -233,7 +239,7 @@
 
                   <md-button class="md-icon-button" @click="execCommand('E')">Save</md-button>
 
-                  <div v-if="add_property=='1'">
+                  <div v-if="add_property=='1' || type=='graph'">
                       <md-button class="md-toolbar-offset md-icon-button" @click="execCommand('0')">0</md-button>
                       <md-button class="md-icon-button" @click="execCommand('1')">1</md-button>
                       <md-button class="md-icon-button" @click="execCommand('2')">2</md-button>
