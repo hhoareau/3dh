@@ -7,7 +7,7 @@
                       <div class="md-layout-item md-size-40 md-alignment-top-center text-center">
                           <div class="md-layout-item" style="margin-bottom: 10px;font-size: x-small;">
                               <span style="font-size: x-large;">3DH</span>
-                              3D & Data Analysis
+                              3D & Data Analysis - v0.0.1
                           </div>
                       </div>
                       <div style="font-size: small;font-weight: lighter;" class="md-layout-item md-size-40 md-alignment-center-left md-xlarge-size">
@@ -25,7 +25,6 @@
                           <div class="md-layout">
                               <div class="md-layout-item"><div class="md-title" style="text-align: left;">Datas / Files</div></div>
                               <div class="md-layout-item" style="text-align: right;">
-                                  <md-button class="md-raised md-secondary" @click="analyseClipboard()">Clipboard</md-button>&nbsp;
                                   <md-button class="md-raised md-primary" @click="help()">Help</md-button>
                               </div>
                           </div>
@@ -34,32 +33,41 @@
                       <md-card-content>
                           <div class="md-layout">
                               <div class="md-layout-item">
-                                  <md-field>
+                                  <md-field v-if="url.length==0">
                                       <label>Files</label>
                                       <md-select v-model="selected_file" id="_file" name="_file" @md-selected="selectFile()">
                                           <md-option v-for="measure in measures" v-bind:value="measure">{{measure}}</md-option>
                                       </md-select>
                                   </md-field>
+                                  <md-field v-if="url.length>0">
+                                      {{url}}
+                                  </md-field>
                               </div>
-                              <div class="md-layout-item" style="text-align: right;">
+                              <div class="md-layout-item" style="text-align: right;" v-if="url.length==0">
                                   <md-button v-show="selected_file.length>0" class="md-raised md-secondary" @click="deleteFile()">Delete</md-button>
                                   <md-button v-show="measures.length>0" class="md-raised md-secondary" @click="randomFile()">Random</md-button>
                               </div>
-                          </div>
-
-                          <div class="md-layout md-gutter md-alignment-center-center">
-                              <div class="md-layout-item md-layout-item md-medium-size-25 md-small-size-33 md-xsmall-size-50">
-                                  <label class="md-button md-primary md-alignment-center" for="_public_file"><md-icon>backup</md-icon>&nbsp;&nbsp;Public</label>
-                                  <md-file style="visibility: hidden" id="_public_file" @md-change="upload($event,true)"/>
-                              </div>
-                              <div class="md-layout-item md-layout-item md-medium-size-25 md-small-size-33 md-xsmall-size-50">
-                                  <label class="md-button md-primary" for="_private_file"><md-icon>backup</md-icon>&nbsp;&nbsp;Private</label>
-                                  <md-file style="visibility: hidden" id="_private_file" @md-change="upload($event,false)"/>
+                              <div class="md-layout-item" style="text-align: right;" v-if="url.length>0">
+                                  <md-button class="md-raised md-secondary" @click="clearURL()">Clear</md-button>
                               </div>
                           </div>
 
+                          <div class="md-layout md-gutter" v-if="url.length==0">
+                              <div class="md-layout-item md-medium-size-33 md-small-size-33 md-xsmall-size-50">
+                                  <label class="md-button md-primary md-alignment-center"  for="_public_file"><md-icon>backup</md-icon>&nbsp;&nbsp;Public</label>
+                                  <md-file style="visibility: hidden;height:0px;" id="_public_file" @md-change="upload($event,true)"/>
+                              </div>
+                              <div class="md-layout-item md-medium-size-33 md-small-size-33 md-xsmall-size-50">
+                                  <label class="md-button md-primary"  for="_private_file"><md-icon>backup</md-icon>&nbsp;&nbsp;Private</label>
+                                  <md-file style="visibility: hidden;height:0px;" id="_private_file" @md-change="upload($event,false)"/>
+                              </div>
+                              <div class="md-layout-item md-medium-size-33 md-small-size-33 md-xsmall-size-50">
+                                  <label class="md-button md-primary" @click="analyseClipboard()"><md-icon>backup</md-icon>&nbsp;&nbsp;Paste</label>
+                              </div>
+                          </div>
 
-                          <FileFormat v-if="selected_file.length>0 && type=='data'" v-on:format="updateFormat($event)" v-bind:cols="data_cols"></FileFormat>
+
+                          <FileFormat v-if="(selected_file.length>0 || url.length>0) && type=='data'" v-on:format="updateFormat($event)" v-bind:cols="data_cols"></FileFormat>
 
                       </md-card-content>
 
@@ -284,6 +292,7 @@ export default class Files extends Vue {
     treatment:string="NOTREATMENT::::";
     params: any[]=[];
     notif:string="";
+    url:string="";
     algo:string="";
     notext:string="1";
     nometrics:string="1";
@@ -406,7 +415,10 @@ export default class Files extends Vue {
       var nav:any=window.navigator;
         nav.clipboard.readText().then((text:string) => {
             if(text.startsWith("http"))
-                this.updateData(text,()=>{this.preview()});
+                this.updateData(text,()=>{
+                    this.url=text;
+                    this.preview();
+                });
         });
     }
 
@@ -540,6 +552,10 @@ export default class Files extends Vue {
         var doc=this.treatment.split("::")[2];
 
         if(this.algo=="NEURALGAS" && this.notif=="")this.notif="dev@f80.fr";
+    }
+
+    clearURL(){
+        this.url="";
     }
 
     openIn(url:string,target="_blank",func:any=null){
