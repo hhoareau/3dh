@@ -103,19 +103,19 @@
           
                 <h4 class="card-header">
                     <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#faq4">
-						Comment "charger" un fichier ?
+						Quel type de données importer ?
 					</a>
                 </h4>
            
             <div id="faq4" class="panel-collapse collapse in">
                 <div class="card-block zone-faq">
-                       Les données peuvent être contenu dans plusieurs types de fichier:<br> <br>
 					- Pour les données en fichier plat, 3DH reconnait le CSV et Excel. <br>
-					- Pour les graphes, on utilisera le format GraphML (souvent noté par l'extension gml). Les graphes peuvent également être construit à partir de la matrice d'adjacence (au format CSV ou Excel) ou par un seuil sur la distance euclidienne entre les mesures.<br>
-					
-						<br>Les données sont récupérées soit directement à partir du client, soit par upload sur le serveur de calcul :
-					 		- dans un répertoire public : dans ce cas, tous les utilisateurs de 3DH y ont accès
-							- dans un répertoire privée, accessible uniquement par mot de passe
+                    Généralement on utilise la première colonne comme index des mesures et les colonnes suivantes comme composantes.
+                    Les chaines de caractères sont converties par calcul de distance pour être graphiquement représentable.
+
+					- Pour les graphes, on utilisera le format GraphML (souvent noté par l'extension gml). <br>
+                    Les graphes peuvent également être construit à partir de la matrice d'adjacence (au format CSV ou Excel) ou par un seuil sur la distance euclidienne entre les mesures.<br>
+
                 </div>
             </div>
         </div>
@@ -196,6 +196,27 @@
         </div>
 		
 		
+		<div class="card">
+                <h4 class="card-header">
+                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#faq10">
+						Comment les données sont elles stockées ?
+					</a>
+                </h4>
+
+            <div id="faq11" class="panel-collapse collapse in">
+                <div class="card-block zone-faq">
+                    Les données sont récupérées soit directement à partir du client, soit par upload sur le serveur de calcul :<br>
+                    - dans un répertoire public : dans ce cas, tous les utilisateurs de 3DH y ont accès<br>
+                    - dans un répertoire privée, accessible uniquement par mot de passe<br>
+
+                    3DH peut également traité des fichiers accessible sur internet par copier/coller de l'url du fichier à analyser.<br><br>
+
+                    A tout moment le fichier peuvent être supprimés du serveur.
+                </div>
+            </div>
+        </div>
+
+
 	</div>
 		
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
