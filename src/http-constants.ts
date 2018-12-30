@@ -14,8 +14,6 @@ export const HTTP = axios.create({
 });
 
 export const ROOT_API=baseURL;
+export const CONFIG=require("../package.json");
 
-export const VERSION=process.env.version;
-
-console.log("root_api"+baseURL);
-console.log("version"+VERSION);
+console.log("root_api:"+baseURL);

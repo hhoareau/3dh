@@ -14,7 +14,9 @@ var router = new VueRouter({
     mode: 'history',
     routes: [
         { path: '/', component: Files },
-        { path: '/:api', component: Files }
+        { path: '/:api', component: Files },
+        { path: '/:api/index.html', component: Files },
+        { path: '/index.html', component: Files }
     ]
 });
 var app = new Vue({

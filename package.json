@@ -1,22 +1,26 @@
 {
   "name": "3DH",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
-  "description": "An interface to use the DockerDataAPI",
+  "description": "3D representation & Data Analysis",
   "license": "MIT",
   "keywords": [
     "data",
     "clustering",
     "ai"
   ],
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/hhoareau/3dh.git"
+  },
   "author": {
-    "name": "Herve Hoareau",
-    "email": "rv@f80.fr",
+    "name": "F80",
+    "email": "contact@f80.fr",
     "url": "https://f80.fr"
   },
   "homepage": "https://hhoareau.github.io/3dh/docs/index.html",
   "scripts": {
-    "serve": "vue-cli-service serve",
+    "serve": "vue-cli-service serve --mode development",
     "build": "vue-cli-service build --mode production",
     "deploy": "push-dir --dir=docs --branch=master --cleanup"
   },

@@ -6,8 +6,8 @@
                   <div class="md-layout">
                       <div class="md-layout-item md-size-40 md-alignment-top-center text-center">
                           <div class="md-layout-item" style="margin-bottom: 10px;font-size: x-small;">
-                              <span style="font-size: x-large;">3DH</span>
-                              3D & Data Analysis - v0.0.1
+                              <span style="font-size: x-large;">{{config.name}}</span>
+                              {{config.description}} - v{{config.version}}
                           </div>
                       </div>
                       <div style="font-size: small;font-weight: lighter;" class="md-layout-item md-size-40 md-alignment-center-left md-xlarge-size">
@@ -281,21 +281,30 @@
               </iframe>
           </div>
       </div>
+        <br>
+      <div class="md-layout">
+          <div class="md-layout-item" style="font-size: small;">
+              By {{config.author.name}}&nbsp;
+              <md-icon>mail</md-icon>:{{config.author.email}}<br>
+              Licence : {{config.license}}
+          </div>
+      </div>
 
   </div>
 </template>
 
 <script lang="ts">
 
-import {HTTP,ROOT_API} from '../http-constants'
-import { Component, Vue } from 'vue-property-decorator';
-import FileFormat from "./FileFormat.vue"
+    import {HTTP, ROOT_API, CONFIG} from '../http-constants'
+    import { Component, Vue } from 'vue-property-decorator';
+    import FileFormat from "./FileFormat.vue"
 
 
 @Component({name:"Files",components:{FileFormat}})
 export default class Files extends Vue {
     selected_file="";
     toast_message:string="";
+    config:any=CONFIG;
     data_cols:any[]=[];
     measures:string[]=[];
     distance:number=0.2;

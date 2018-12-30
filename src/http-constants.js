@@ -10,7 +10,6 @@ export var HTTP = axios.create({
     baseURL: baseURL
 });
 export var ROOT_API = baseURL;
-export var VERSION = process.env.version;
-console.log("root_api" + baseURL);
-console.log("version" + VERSION);
+export var CONFIG = require("../package.json");
+console.log("root_api:" + baseURL);
 //# sourceMappingURL=http-constants.js.map
