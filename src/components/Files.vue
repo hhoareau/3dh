@@ -212,12 +212,24 @@
                                   </md-field>
                               </div>
                           </div>
+
+                          <div class="md-layout">
+                              <div class="md-layout-item md-size-40">
+                                  <md-field>
+                                      <label>Processors</label>
+                                      <md-input type="number" v-model="processors"></md-input>
+                                  </md-field>
+                              </div>
+                          </div>
+
+
                           <div class="md-layout md-gutter">
                               <div class="md-layout-item"><md-checkbox v-model="notext" value="1">No text</md-checkbox></div>
                               <div class="md-layout-item"><md-checkbox v-model="nometrics" value="1">No metrics</md-checkbox></div>
                               <div class="md-layout-item"><md-checkbox v-model="add_property" value="1">Add Property</md-checkbox></div>
                               <div class="md-layout-item"><md-checkbox v-model="autorotate" value="1">Auto Rotate</md-checkbox></div>
                           </div>
+
 
                       </md-card-content>
                   </md-card>
@@ -303,6 +315,7 @@ export default class Files extends Vue {
     format:string="";
     lastRender:number=0;
     hRender:any=null;
+    processors:number=2;
     hourglass:string="";
     rows=0;
     server_api:string=ROOT_API;
@@ -530,6 +543,7 @@ export default class Files extends Vue {
         if(options.autorotate==null)options.autorotate=(this.autorotate=="1");
         if(options.limit==null)options.limit=this.limit;
         if(options.pca==null)options.pca=this.pca;
+        if(options.processors==null)options.processors=this.processors;
 
 
         for(var o in options)
@@ -541,7 +555,7 @@ export default class Files extends Vue {
     }
 
     showParameters(){
-        this.openIn(this.treatment.split("::")[2],"out");
+        //this.openIn(this.treatment.split("::")[2],"out");
         this.algo=this.treatment.split("::")[0];
         this.params=[];
         this.treatment.split("::")[1].split(" ").forEach((p)=>{

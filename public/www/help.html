@@ -109,13 +109,13 @@
            
             <div id="faq4" class="panel-collapse collapse in">
                 <div class="card-block zone-faq">
-					- Pour les données en fichier plat, 3DH reconnait le CSV et Excel. <br>
-                    Généralement on utilise la première colonne comme index des mesures et les colonnes suivantes comme composantes.
+                  <p> - Pour les données en fichier plat, 3DH reconnait le CSV et Excel.</p>
+                  <p> Généralement on utilise la première colonne comme index des mesures et les colonnes suivantes comme composantes.
                     Les chaines de caractères sont converties par calcul de distance pour être graphiquement représentable.
-
-					- Pour les graphes, on utilisera le format GraphML (souvent noté par l'extension gml). <br>
-                    Les graphes peuvent également être construit à partir de la matrice d'adjacence (au format CSV ou Excel) ou par un seuil sur la distance euclidienne entre les mesures.<br>
-
+                    
+                    - Pour les graphes, on utilisera le format GraphML (souvent noté par l'extension gml).<br>
+                  </p>
+Les graphes peuvent également être construit à partir de la matrice d'adjacence (au format CSV ou Excel) ou par un seuil sur la distance euclidienne entre les mesures.<br>
                 </div>
             </div>
         </div>
@@ -129,9 +129,10 @@
                 </h4>
            
             <div id="faq6" class="panel-collapse collapse in">
-                <div class="card-block zone-faq">
-                       Lorsque plusieurs clustering sont effectués, il peut être pertinent de disposer d'un score pour chaque clustering. Ce score est calculé suivant sur la base des métriques disponibles dans la librairie Python <a href="https://scikit-learn.org/stable/modules/clustering.html#clustering-evaluation" target="_blank">SCIKIT-LEARN</a><br><br>
-					<iframe  
+                <div class="card-block zone-faq"> Lorsque plusieurs clustering sont effectués, il peut être pertinent de disposer d'un score pour chaque clustering. <br>
+                  Ce score est calculé suivant sur la base des métriques disponibles dans la librairie Python <a href="https://scikit-learn.org/stable/modules/clustering.html#clustering-evaluation" target="_blank">SCIKIT-LEARN</a><br>
+                  <br>
+                  <iframe  
 							style="border: none;"
 							src="https://scikit-learn.org/stable/modules/clustering.html#clustering-evaluation" 
 							height="400px" width="100%">
@@ -165,11 +166,16 @@
           
             <div id="faq9" class="panel-collapse collapse in">
                 <div class="card-block zone-faq">
-                       Plusieurs paramètres modifie la présentation des données.
-						- no text: permet de supprimer le texte qui accompagne la représentation graphique
-						- no metric : permet de ne pas calculer les métriques notamment pour gagner du temps sur la représentation
-						- add property : permet d'ajouter des informations sur chaque mesure directement dans le graphique. Si ces informations sont numériques, elles peuvent être utilisé pour modifier le diamètre des sphéres dans la représentation graphique.
-						- rotate : va déclencher une rotation du graphique dés son affichage
+                  <p> Plusieurs paramètres modifie la présentation des données.</p>
+					<ul>
+					  <li>no text: permet de supprimer le texte qui accompagne la représentation graphique </li>
+					  <li>no metric : permet de ne pas calculer les métriques notamment pour gagner du temps sur la représentation</li>
+					  <li>add property : permet d'ajouter des informations sur chaque mesure directement dans le graphique. Si ces informations sont numériques, elles peuvent être utilisé pour modifier le diamètre des sphéres dans la représentation graphique.</li>
+					  <li>rotate : va déclencher une rotation du graphique dés son affichage </li>
+					</ul>
+					
+                  
+                  
                 </div>
             </div>
         </div>
@@ -198,7 +204,7 @@
 		
 		<div class="card">
                 <h4 class="card-header">
-                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#faq10">
+                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#faq11">
 						Comment les données sont elles stockées ?
 					</a>
                 </h4>
@@ -212,6 +218,25 @@
                     3DH peut également traité des fichiers accessible sur internet par copier/coller de l'url du fichier à analyser.<br><br>
 
                     A tout moment le fichier peuvent être supprimés du serveur.
+                </div>
+            </div>
+        </div>
+		
+		<div class="card">
+                <h4 class="card-header">
+                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#faq12">
+						Comment fonctionne les parametres avancés ?
+					</a>
+                </h4>
+
+            <div id="faq12" class="panel-collapse collapse in">
+                <div class="card-block zone-faq">
+                    <p>Certains paramètres permettent d'affiner le fonctionnement de 3DH :</p>
+					<ul>
+					<li>Processors : indique le nombre de processeur disponible sur le serveur de calcul. Nécessaire pour certains algorithme complexe</li>
+						<li>Limit : permet de limiter les traitements aux "n" premières données. Ce paramètre est utile quand les traitements portent sur des quantités importantes de données</li>
+						<li>Nb View : permet de visualiser les données sur plus de 3 dimensions en répartissant les composantes sur plusieurs représentations graphiques</li>
+					</ul>
                 </div>
             </div>
         </div>
