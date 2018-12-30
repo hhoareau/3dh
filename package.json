@@ -2,8 +2,9 @@
   "name": "3DH",
   "version": "0.1.1",
   "private": true,
-  "description": "3D representation & Data Analysis",
+  "description": "3D Graph & Data Analysis",
   "license": "MIT",
+  "root_api":"https://ss.shifumix.com:5000",
   "keywords": [
     "data",
     "clustering",
@@ -18,7 +19,7 @@
     "email": "contact@f80.fr",
     "url": "https://f80.fr"
   },
-  "homepage": "https://hhoareau.github.io/3dh/docs/index.html",
+  "homepage": "https://3dh.f80.fr/www/start.html",
   "scripts": {
     "serve": "vue-cli-service serve --mode development",
     "build": "vue-cli-service build --mode production",

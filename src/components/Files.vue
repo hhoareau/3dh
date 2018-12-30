@@ -234,7 +234,17 @@
                       </md-card-content>
                   </md-card>
               </div>
-              <span v-if="$route.params.api!=null">Server: {{$route.params.api}}</span>
+
+              <br>
+              <div class="md-layout">
+                  <div class="md-layout-item" style="font-size: small;">
+                      <md-icon style="font-size: small;">computer</md-icon>&nbsp;{{server_api}}<br><br>
+                      <a v-bind:href="config.homepage"><md-icon>home</md-icon></a><br>
+                      {{config.name}} by {{config.author.name}}<br>
+                      <md-icon>mail</md-icon>:{{config.author.email}}<br><br>
+                      Licence : {{config.license}}
+                  </div>
+              </div>
           </div>
           <div class="md-layout-item md-xlarge-size-70 md-large-size-60 md-medium-size-60 md-small-size-100 md-xsmall-size-100">
               <!-- Toolbar -->
@@ -281,14 +291,7 @@
               </iframe>
           </div>
       </div>
-        <br>
-      <div class="md-layout">
-          <div class="md-layout-item" style="font-size: small;">
-              By {{config.author.name}}&nbsp;
-              <md-icon>mail</md-icon>:{{config.author.email}}<br>
-              Licence : {{config.license}}
-          </div>
-      </div>
+
 
   </div>
 </template>
@@ -327,12 +330,13 @@ export default class Files extends Vue {
     processors:number=2;
     hourglass:string="";
     rows=0;
-    server_api:string=ROOT_API;
+    server_api=ROOT_API;
 
   mounted(){
-      if(this.$route.params["api"]!=null)this.server_api=this.$route.params["api"];
+      if(this.$route.query["api"]!=null)this.server_api=this.$route.query["api"];
       if(!this.server_api.startsWith("http"))this.server_api="http://"+this.server_api;
       if(!this.server_api.endsWith(":5000"))this.server_api=this.server_api+":5000";
+
       this.refreshFiles();
 
       addEventListener("message",(evt:any)=> {
