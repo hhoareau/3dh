@@ -33,6 +33,20 @@
                       <md-card-content>
                           <div class="md-layout">
                               <div class="md-layout-item">
+                                  <md-field>
+                                      <label>Directory</label>
+                                      <md-input type="text" v-model="dir" @blur="refreshFiles()"></md-input>
+                                  </md-field>
+                              </div>
+                              <div class="md-layout-item">
+                                  <md-button class="md-raised md-secondary" @click="generateSecureDir()">Secure Dir</md-button>
+                              </div>
+                              <div class="md-layout-item">
+                                  <md-button class="md-raised md-secondary" @click="generatePublicDir()">Public Dir</md-button>
+                              </div>
+                          </div>
+                          <div class="md-layout">
+                              <div class="md-layout-item">
                                   <md-field v-if="url.length==0">
                                       <label>Files</label>
                                       <md-select v-model="selected_file" id="_file" name="_file" @md-selected="selectFile()">
@@ -54,18 +68,14 @@
 
                           <div class="md-layout md-gutter" v-if="url.length==0">
                               <div class="md-layout-item md-medium-size-33 md-small-size-33 md-xsmall-size-50">
-                                  <label class="md-button md-primary md-alignment-center"  for="_public_file"><md-icon>backup</md-icon>&nbsp;&nbsp;Public</label>
-                                  <md-file style="visibility: hidden;height:0px;" id="_public_file" @md-change="upload($event,true)"/>
-                              </div>
-                              <div class="md-layout-item md-medium-size-33 md-small-size-33 md-xsmall-size-50">
-                                  <label class="md-button md-primary"  for="_private_file"><md-icon>backup</md-icon>&nbsp;&nbsp;Private</label>
-                                  <md-file style="visibility: hidden;height:0px;" id="_private_file" @md-change="upload($event,false)"/>
-                              </div>
-                              <div class="md-layout-item md-medium-size-33 md-small-size-33 md-xsmall-size-50">
                                   <label class="md-button md-primary" @click="analyseClipboard()"><md-icon>backup</md-icon>&nbsp;&nbsp;Paste</label>
                               </div>
-                          </div>
 
+                              <div class="md-layout-item md-medium-size-33 md-small-size-33 md-xsmall-size-50">
+                                  <label class="md-button md-primary"  for="_private_file"><md-icon>backup</md-icon>&nbsp;&nbsp;Upload</label>
+                                  <md-file style="visibility: hidden;height:0px;" id="_private_file" @md-change="upload($event)"/>
+                              </div>
+                          </div>
 
                           <FileFormat v-if="(selected_file.length>0 || url.length>0) && type=='data'" v-on:format="updateFormat($event)" v-bind:cols="data_cols"></FileFormat>
 
@@ -193,7 +203,7 @@
                       <md-card-header>
                           <div class="md-layout">
                               <div class="md-layout-item"><div class="md-title" style="text-align: left;">Advanced</div></div>
-                              <div class="md-layout-item" style="text-align: right;"><md-button class="md-raised md-primary" @click="openIn(showLink())">Execute</md-button></div>
+                              <div class="md-layout-item" style="text-align: right;"><md-button class="md-raised md-primary" @click="openIn(showLink())">Share</md-button></div>
                           </div>
                       </md-card-header>
                       <md-card-content>
@@ -228,6 +238,15 @@
                               <div class="md-layout-item"><md-checkbox v-model="nometrics" value="1">No metrics</md-checkbox></div>
                               <div class="md-layout-item"><md-checkbox v-model="add_property" value="1">Add Property</md-checkbox></div>
                               <div class="md-layout-item"><md-checkbox v-model="autorotate" value="1">Auto Rotate</md-checkbox></div>
+                          </div>
+                            <br>
+                          <div class="md-layout">
+                              <div class="md-layout-item">
+                                  <md-field>
+                                      <label>Enter your email to be notify</label>
+                                      <md-input type="email" v-model="notif"></md-input>
+                                  </md-field>
+                              </div>
                           </div>
 
 
@@ -301,7 +320,8 @@
     import {HTTP, ROOT_API, CONFIG} from '../http-constants'
     import { Component, Vue } from 'vue-property-decorator';
     import FileFormat from "./FileFormat.vue"
-
+    import * as Cookies from 'es-cookie';
+    import { Guid } from "guid-typescript";
 
 @Component({name:"Files",components:{FileFormat}})
 export default class Files extends Vue {
@@ -326,6 +346,7 @@ export default class Files extends Vue {
     type:string="data";
     format:string="";
     lastRender:number=0;
+    dir:string="public";
     hRender:any=null;
     processors:number=2;
     hourglass:string="";
@@ -336,6 +357,9 @@ export default class Files extends Vue {
       if(this.$route.query["api"]!=null)this.server_api=this.$route.query["api"];
       if(!this.server_api.startsWith("http"))this.server_api="http://"+this.server_api;
       if(!this.server_api.endsWith(":5000"))this.server_api=this.server_api+":5000";
+
+      if(Cookies.get("dir")!=undefined)
+        this.dir=""+Cookies.get("dir");
 
       this.refreshFiles();
 
@@ -354,7 +378,8 @@ export default class Files extends Vue {
 
   refreshFiles(){
       this.hourglass="Files listing";
-      HTTP.get(this.server_api+'/datas/measures')
+      Cookies.set('dir',this.dir);
+      HTTP.get(this.server_api+"/datas/measures?dir="+this.dir)
           .then(response => {
               this.measures = [];
 
@@ -409,7 +434,7 @@ export default class Files extends Vue {
 
     deleteFile(){
         this.hourglass="File deleting";
-        HTTP.delete(this.server_api+"/datas/measure/"+this.selected_file).then(r=>{
+        HTTP.delete(this.server_api+"/datas/measure/"+this.selected_file+"?password="+this.dir).then(r=>{
             this.refreshFiles();
         }).catch(e=>{
             this.hourglass="";
@@ -475,13 +500,14 @@ export default class Files extends Vue {
 
         if(url.replace("file:","").length>0){
             url=encodeURIComponent(url);
-            var url_analyse=this.server_api+"/analyse?format=json&url="+url;
+            var url_analyse=this.server_api+"/analyse?dir="+this.dir+"&format=json&url="+url;
             this.hourglass="Data analyzing";
             HTTP.get(url_analyse).then((r:any)=>{
+                r=r.data;
                 this.hourglass="";
-                this.data_cols=r.data.columns;
-                this.rows=r.data.rows;
-                this.type=r.data.type;
+                this.data_cols=r.columns
+                this.rows=r.rows;
+                this.type=r.type;
                 for(var i=0;i<this.data_cols.length;i++){
                     this.data_cols[i].index="radio"+i;
                     this.data_cols[i].format=this.data_cols[i].Type;
@@ -537,6 +563,7 @@ export default class Files extends Vue {
 
         //Ajout d'options supplémentaire sur l'url
         if(this.notif.length>0)rc+="&notif="+this.notif;
+        rc+="&dir="+this.dir;
 
         // var format="";
         // if(format!=null){
@@ -593,14 +620,26 @@ export default class Files extends Vue {
         }
     }
 
-    upload(evt:any,type:boolean){
+    generateSecureDir(){
+        this.dir = ""+Guid.create();
+        for(let i=0;i<20;i++)this.dir=this.dir.replace("-","");
+        this.refreshFiles();
+    }
+
+    generatePublicDir(){
+        this.dir = "public";
+        this.refreshFiles();
+    }
+
+    upload(evt:any){
       let f:File=evt[0];
 
       let fd=new FormData();
       fd.append("files",f);
       this.raz();
       this.hourglass="File uploading";
-        HTTP.post(this.server_api+"/datas/measure/"+f.name+"?public="+type,fd)
+
+        HTTP.post(this.server_api+"/datas/measure/"+f.name+"?dir="+this.dir,fd)
             .then(r => {
                 if(f.name.endsWith("zip"))
                     this.refreshFiles();

@@ -260,7 +260,8 @@
 
 
 
-    function refreshFiles(document:any){
+    function refreshFiles(document:any=null){
+        if(document==null)document=window.document;
         fetch("/datas/measures").then((r)=>{return r.json();}).then((lst)=>{
             let rc:any=[];
             lst.forEach((f:any)=>{

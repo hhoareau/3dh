@@ -4,15 +4,15 @@
   "private": true,
   "description": "3D Graph & Data Analysis",
   "license": "MIT",
-  "root_api":"https://ss.shifumix.com:5000",
+  "root_api": "https://ss.shifumix.com:5000",
   "keywords": [
     "data",
     "clustering",
     "ai"
   ],
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/hhoareau/3dh.git"
+    "type": "git",
+    "url": "https://github.com/hhoareau/3dh.git"
   },
   "author": {
     "name": "F80",
@@ -27,6 +27,8 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "es-cookie": "^1.2.0",
+    "guid-typescript": "^1.0.9",
     "https": "^1.0.0",
     "https-agent": "^1.0.0",
     "register-service-worker": "^1.5.2",

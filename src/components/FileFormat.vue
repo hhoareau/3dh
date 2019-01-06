@@ -57,7 +57,7 @@ export default class FileFormat extends Vue {
 
 
   sendFormat(){
-      if(this.cols.length>0){
+      if(this.cols!=null && this.cols.length>0){
           var format:any={index:"",prop:"",measure:""};
           var i=0;
           this.cols.forEach(col=>{

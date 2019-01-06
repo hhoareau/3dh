@@ -231,6 +231,9 @@ function openlink(document) {
     }, 500);
 }
 function refreshFiles(document) {
+    if (document === void 0) { document = null; }
+    if (document == null)
+        document = window.document;
     fetch("/datas/measures").then(function (r) { return r.json(); }).then(function (lst) {
         var rc = [];
         lst.forEach(function (f) {

@@ -10,7 +10,8 @@ import './registerServiceWorker'
 import Files from "./components/Files.vue"
 
 Vue.use(VueMaterial);
-Vue.use(VueRouter)
+Vue.use(VueRouter);
+
 Vue.config.productionTip = false;
 Vue.config.silent = true
 
