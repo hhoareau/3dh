@@ -83,7 +83,7 @@
 
                   </md-card>
                     <br>
-                  <md-card v-if="selected_file.length>0">
+                  <md-card v-if="selected_file.length+url.length>0">
                       <md-card-header>
                           <div class="md-layout">
                               <div class="md-layout-item"><div class="md-title" style="text-align: left;">Treatment</div></div>
@@ -199,7 +199,7 @@
                       </md-card-content>
                   </md-card>
                   <br>
-                  <md-card v-if="selected_file.length>0">
+                  <md-card v-if="selected_file.length+url.length>0">
                       <md-card-header>
                           <div class="md-layout">
                               <div class="md-layout-item"><div class="md-title" style="text-align: left;">Advanced</div></div>
@@ -359,7 +359,7 @@ export default class Files extends Vue {
       if(!this.server_api.endsWith(":5000"))this.server_api=this.server_api+":5000";
 
       if(Cookies.get("dir")!=undefined)
-        this.dir=""+Cookies.get("dir");
+          this.dir=""+Cookies.get("dir");
 
       this.refreshFiles();
 
@@ -378,7 +378,6 @@ export default class Files extends Vue {
 
   refreshFiles(){
       this.hourglass="Files listing";
-      Cookies.set('dir',this.dir);
       HTTP.get(this.server_api+"/datas/measures?dir="+this.dir)
           .then(response => {
               this.measures = [];
@@ -419,7 +418,9 @@ export default class Files extends Vue {
               this.hourglass="preview treatment";
               var iframe:any=document.getElementById("clusterView");
               iframe.contentWindow.location.reload();
-              this.openIn(this.showLink({autorotate:true,pca:1}),'out')
+              var url=this.showLink({autorotate:true,pca:1});
+              console.log("Ouverture de "+url);
+              this.openIn(url,'out')
           }
       },1000);
     }
@@ -434,7 +435,7 @@ export default class Files extends Vue {
 
     deleteFile(){
         this.hourglass="File deleting";
-        HTTP.delete(this.server_api+"/datas/measure/"+this.selected_file+"?password="+this.dir).then(r=>{
+        HTTP.delete(this.server_api+"/datas/measure/"+this.selected_file+"?dir="+this.dir).then(r=>{
             this.refreshFiles();
         }).catch(e=>{
             this.hourglass="";
@@ -465,11 +466,15 @@ export default class Files extends Vue {
     analyseClipboard(){
       var nav:any=window.navigator;
         nav.clipboard.readText().then((text:string) => {
-            if(text.startsWith("http"))
+            if(text.startsWith("http")){
                 this.updateData(text,()=>{
                     this.url=text;
                     this.preview();
                 });
+            } else {
+                this.toast_message="Clipboard must contain an url (start with http)";
+            }
+
         });
     }
 
@@ -535,7 +540,7 @@ export default class Files extends Vue {
 
 
     showLink(options:any={},service="graph"):string {
-        var url_file=this.selected_file;
+        var url_file=this.selected_file+this.url;
         if(url_file.length==0)return("");
 
         this.type="data";
@@ -621,9 +626,16 @@ export default class Files extends Vue {
     }
 
     generateSecureDir(){
-        this.dir = ""+Guid.create();
-        for(let i=0;i<20;i++)this.dir=this.dir.replace("-","");
-        this.refreshFiles();
+        if(Cookies.get("dir")!=undefined){
+            this.dir=""+Cookies.get("dir");
+        }
+        else{
+            this.dir = ""+Guid.create();
+            Cookies.set("dir",this.dir);
+            for(let i=0;i<20;i++)this.dir=this.dir.replace("-","");
+            this.refreshFiles();
+        }
+
     }
 
     generatePublicDir(){
