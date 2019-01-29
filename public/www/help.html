@@ -39,9 +39,19 @@
        
             <div id="faq1" class="panel-collapse collapse in">
                 <div class="card-block zone-faq">
-                    3DH permet l'étude d'un ensemble de mesures (point) en n dimensions via une représentation 3D interractive.
-                    Il opére également certains calculs dont les résultats se retrouve également dans le graphique.
-                    Il est également compatible avec les graphes, fournissant la meilleur représentation possible compte tenu des relations existantes entre les noeuds.
+                    <p>
+                        3DH permet l'étude d'un ensemble de point à n composantes via une représentation 3D interractive.<br>
+                    Il opére également certains calculs dont les résultats se retrouvent également visualisables dans la représentation 3D.
+                        3DH permet également de travailler sur les graphes, fournissant
+                        <ul>
+                    <li>la meilleur représentation possible compte tenu des relations existantes entre les noeuds,</li>
+                    <li>certaines caractéristiques des noeuds (calcul de centralité notamment)</li>
+                    <li>recherche de communauté, suivant plusieurs algorithmes</li>
+                </ul>
+
+
+
+                    </p>
                 </div>
             </div>
         </div>
@@ -57,8 +67,8 @@
                 <div class="card-block zone-faq">
 					3DH dispose d'une représentation 3D interactive. Pour activer les commandes vous pouvez utiliser la barre d'outil dans le mode "Preview" et le clavier avec les touches suivantes :<br><br>
 					
-                       - <strong>'s'</strong> et SHIFT+'s' respectivement montre et cache toutes les mesures<br>
-                        - <strong>'m'</strong> et SHIFT+'m' opere un filtre sur les mesures pour les montrer / cacher<br>
+                       - <strong>'s'</strong> et SHIFT+'s' respectivement montre et cache tous les points<br>
+                        - <strong>'m'</strong> et SHIFT+'m' opere un filtre sur les points pour les montrer / cacher<br>
                         - <strong>'c'</strong> et SHIFT+'c' opere un filtre sur les clusters pour les montrer / cacher<br>
                         - <strong>'a'</strong> et SHIFT+'a' engage une autorotation du graphique<br>
                         - <strong>'w'</strong> centre la caméra sur l'échantillon pointé par la souris<br>
@@ -66,14 +76,14 @@
                         - <strong>'+'</strong> et '-' écarte/réduit les mesure par changement d'échelle <br>
                         - <strong>'e'</strong> export les données visibles au format CSV dans le presse papier<br>
                         - <strong>'p'</strong> et SHIFT+'p' entoure les clusters visible (patatoides) <br>
-                        - <strong>'x'</strong> et SHIFT+'x' propagation des mesures visiblesh / cachées <br>
+                        - <strong>'x'</strong> et SHIFT+'x' propagation des points visibles / cachées <br>
                         - <strong>'o'</strong> entoure les clusters de référence<br>
                         - <strong>'r'</strong> supprime définitivement le bruit (permet d'accéler la navigation)<br>
-                        - <strong>'k'</strong> connecte entre elles les mesures du même nom<br>
+                        - <strong>'k'</strong> connecte entre eux les points du même nom<br>
                         - 'click' et 'SHIFT+click' montre / cache le cluster d'appartenance de la mesure<br>
                         - 'double click' permet d'étudier un cluster en particulier<br>
-                        - 'ALT+click' permet grossis / réduit les mesures du même nom<br>
-                        - 'click droit' permet d'enregistrer la visu en format image<br>
+                        - 'ALT+click' grossis / réduit les points du même nom<br>
+                        - 'click droit' permet d'enregistrer la visualisation en format image<br>
 					
 					<br>Dans plusieurs cas, l'usage simultanée de la touche majuscule (SHIFT) inverse l'action de la touche principale
                 </div>
@@ -94,7 +104,7 @@
 					    - d'enregistrer une vidéo de l'affichage 3D et des manipulations effectuées (voir
 					<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#faq2"> commandes disponibles</a>)<br>
 						- un click droit sur le graphique permet d'enregistrer une image statique de la représentation affichée<br>
-						- lorsqu'on on est en affichage plein écran il est possible d'envoyer le lien présent dans la barre du navigateur. Dans ce cas, le destinataire pourra également manipuler les données.<br>
+						- lorsqu'on on est en affichage plein écran, il est possible d'envoyer le lien présent dans la barre du navigateur. Dans ce cas, le destinataire pourra également manipuler les données.<br>
                 </div>
             </div>
         </div>
@@ -108,13 +118,14 @@
            
             <div id="faq4" class="panel-collapse collapse in">
                 <div class="card-block zone-faq">
-                  <p> - Pour les données en fichier plat, 3DH reconnait le CSV et Excel.</p>
-                  <p> Généralement on utilise la première colonne comme index des mesures et les colonnes suivantes comme composantes.
+                  <p>Pour les données en fichier plat, 3DH reconnait le CSV et Excel.</p>
+                  <p>Généralement on utilise la première colonne comme index des points et les colonnes suivantes comme composantes.
                     Les chaines de caractères sont converties par calcul de distance pour être graphiquement représentable.
                     
-                    - Pour les graphes, on utilisera le format GraphML (souvent noté par l'extension gml).<br>
+                    Pour les graphes, on utilisera le format GraphML (souvent noté par l'extension gml).<br>
                   </p>
-Les graphes peuvent également être construit à partir de la matrice d'adjacence (au format CSV ou Excel) ou par un seuil sur la distance euclidienne entre les mesures.<br>
+                    Les graphes peuvent également être construit à partir de la matrice d'adjacence (au format CSV ou Excel)
+                    ou par un seuil sur la distance euclidienne entre les points.<br>
                 </div>
             </div>
         </div>
@@ -129,10 +140,10 @@ Les graphes peuvent également être construit à partir de la matrice d'adjacen
 
             <div id="faq13" class="panel-collapse collapse in">
                 <div class="card-block zone-faq">
-                    <p>Il existe de nombreuses sources de données ouvertes</p>
+                    <p>Il existe de nombreuses sources de données ouvertes, en voici quelques unes : </p>
                     <ul>
                         <li><a href="https://opendata.paris.fr/explore/?sort=modified">Données ouvertes sur Paris</a></li>
-                        <li><a href="https://www.kaggle.com/datasets">Kaggle, la référence des concours de données ouvertes</a></li>
+                        <li><a href="https://www.kaggle.com/datasets">Kaggle, la référence des concours de Data Scientist</a></li>
                         <li><a href="https://github.com/gephi/gephi/wiki/Datasets">Divers graphes</a></li>
                         <li><a href="http://topology-zoo.org/dataset.html">The Internet Topology Zoo</a></li>
                         <li><a href="http://sonetlab.fbk.eu/data/social_networks_of_wikipedia/">Graphes basés sur Wikipedia</a></li>
@@ -143,29 +154,6 @@ Les graphes peuvent également être construit à partir de la matrice d'adjacen
 
 
 
-
-
-        <div class="card ">
-                <h4 class="card-header">
-                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#faq6">
-						Quels indicateurs de performances du clustering sont calculés ?
-					</a>
-                </h4>
-           
-            <div id="faq6" class="panel-collapse collapse in">
-                <div class="card-block zone-faq"> Lorsque plusieurs clustering sont effectués, il peut être pertinent de disposer d'un score pour chaque clustering. <br>
-                  Ce score est calculé suivant sur la base des métriques disponibles dans la librairie Python <a href="https://scikit-learn.org/stable/modules/clustering.html#clustering-evaluation" target="_blank">SCIKIT-LEARN</a><br>
-                  <br>
-                  <iframe  
-							style="border: none;"
-							src="https://scikit-learn.org/stable/modules/clustering.html#clustering-evaluation" 
-							height="400px" width="100%">
-					</iframe>
-					
-                </div>
-            </div>
-        </div>
-		
 		<div class="card ">
            
                 <h4 class="card-header">
@@ -176,7 +164,16 @@ Les graphes peuvent également être construit à partir de la matrice d'adjacen
            
             <div id="faq8" class="panel-collapse collapse in">
                 <div class="card-block zone-faq">
-                       Il est possible de tester plusieurs combinaisons de paramétrages des algorithmes de clustering en séparant les valeurs des paramètres par une "," (le séparateur de décimal étant le ".")
+                    <p>
+                        Il est possible de tester plusieurs combinaisons de paramétrages des algorithmes de clustering
+                        en séparant les valeurs des paramètres par une "," (le séparateur de décimal restant le ".")
+                    </p>
+                    <p>
+                        L'usage de plusieurs paramètres abouti à la représentation 3D de plusieurs modèles.<br>
+                        Ainsi si l'on donne 2 valeurs à 2 paramètres,
+                        on abouti à 4 représentations car le système explore toute les combinaisons.
+                    </p>
+
                 </div>
             </div>
         </div>
@@ -207,19 +204,48 @@ Les graphes peuvent également être construit à partir de la matrice d'adjacen
 		<div class="card">
                 <h4 class="card-header">
                     <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#faq10">
-						Quelles sont les principales métriques des graphes ?
+						Quelles sont les principales métriques utilisées pour les graphes et pour le clustering ?
 					</a>
                 </h4>
           
             <div id="faq10" class="panel-collapse collapse in">
                 <div class="card-block zone-faq">
-                       Pour chaque noeud, plusieurs métriques sont évaluées :<br>
-							
-						Autour de la <a href="https://en.wikipedia.org/wiki/Centrality">centralité</a> des noeuds <br>
-					
-							- La <a href="https://en.wikipedia.org/wiki/Betweenness_Centrality?oldid=724235368">centralité intermédiaire</a><br>
-							- La<a href="https://en.wikipedia.org/wiki/Closeness_centrality"> centralité de proximité</a><br>
-							- Le <a href="https://en.wikipedia.org/wiki/PageRank">PageRank</a><br>
+                    <p>
+                    <h3>Pour le clustering</h3>
+                    On va grossièrement distinguer 2 types de métriques :<br>
+                    <ul>
+                        <li>Le premier type repose sur la silhouette du clustering. Il va combiner l'écartement des clusters et leur densité</li>
+                        <li>Le second type va mesurer l'écart avec un cluster de référence (ce qui suppose d'en posséder un).</li>
+                    </ul>
+
+
+                    L'usage des métriques peut être utile pour répondre à la problématique de choix des paramétres des algorithmes. <br>
+
+                        Ce score est calculé suivant sur la base des métriques disponibles dans la librairie Python <a href="https://scikit-learn.org/stable/modules/clustering.html#clustering-evaluation" target="_blank">SCIKIT-LEARN</a><br>
+                        <br>
+                        <iframe
+                                style="border: none;"
+                                src="https://scikit-learn.org/stable/modules/clustering.html#clustering-evaluation"
+                                height="400px" width="100%">
+                        </iframe>
+
+                    </p>
+
+                    <h3>Pour les graphes</h3>
+                    Les métriques sont nombreuses. Elles peuvent porter sur :
+                    <ul>
+                        <li>Le graphe dans son ensemble</li>
+                        <li>Les noeuds (en particulier les métriques de centralité)</li>
+                        <li>Les arêtes</li>
+                    </ul>
+
+
+						Autour de la <a href="https://en.wikipedia.org/wiki/Centrality">centralité</a> des noeuds :<br>
+                        <ul>
+                            <li>La <a href="https://en.wikipedia.org/wiki/Betweenness_Centrality?oldid=724235368">centralité intermédiaire</a></li>
+                            <li>La <a href="https://en.wikipedia.org/wiki/Closeness_centrality">centralité de proximité</a></li>
+                            <li>Le <a href="https://en.wikipedia.org/wiki/PageRank">PageRank</a></li>
+                        </ul>
 							
                 </div>
             </div>
@@ -235,13 +261,14 @@ Les graphes peuvent également être construit à partir de la matrice d'adjacen
 
             <div id="faq11" class="panel-collapse collapse in">
                 <div class="card-block zone-faq">
-                    Les données sont récupérées soit directement à partir du client, soit par upload sur le serveur de calcul :<br>
-                    - dans un répertoire public : dans ce cas, tous les utilisateurs de 3DH y ont accès<br>
-                    - dans un répertoire privée, accessible uniquement par mot de passe<br>
+                    Les données sont récupérées soit directement à partir d'un lien internet (dés lors que le fichier est partagé),
+                    soit par upload sur le serveur de calcul :<br>
+                    <ul>
+                        <li>dans un répertoire public : dans ce cas, tous les utilisateurs de 3DH y ont accès</li>
+                        <li>dans un répertoire privée, accessible uniquement par mot de passe</li>
+                    </ul>
 
-                    3DH peut également traité des fichiers accessible sur internet par copier/coller de l'url du fichier à analyser.<br><br>
-
-                    A tout moment le fichier peuvent être supprimés du serveur.
+                    A tout moment les fichier peuvent être supprimés du serveur.
                 </div>
             </div>
         </div>
@@ -255,12 +282,13 @@ Les graphes peuvent également être construit à partir de la matrice d'adjacen
 
             <div id="faq12" class="panel-collapse collapse in">
                 <div class="card-block zone-faq">
-                    <p>Certains paramètres permettent d'affiner le fonctionnement de 3DH :</p>
+                    <p>Certains paramètres permettent d'affiner le fonctionnement de 3DH :
 					<ul>
-					<li>Processors : indique le nombre de processeur disponible sur le serveur de calcul. Nécessaire pour certains algorithme complexe</li>
+					    <li>Processors : indique le nombre de processeurs disponibles sur le serveur de calcul. L'usage du calcul parallèle peut être interessant pour certains algorithmes complexes</li>
 						<li>Limit : permet de limiter les traitements aux "n" premières données. Ce paramètre est utile quand les traitements portent sur des quantités importantes de données</li>
 						<li>Nb View : permet de visualiser les données sur plus de 3 dimensions en répartissant les composantes sur plusieurs représentations graphiques</li>
 					</ul>
+                    </p>
                 </div>
             </div>
         </div>
