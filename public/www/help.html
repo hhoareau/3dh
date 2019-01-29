@@ -294,6 +294,31 @@
             </div>
         </div>
 
+        <div class="card">
+            <h4 class="card-header">
+                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#faq15">
+                    Quels sont les algorithmes utilisés par 3DH?
+                </a>
+            </h4>
+
+            <div id="faq15" class="panel-collapse collapse in">
+                <div class="card-block zone-faq">
+                    <p>Pour le clustering, 3DH propose plusieurs algorithmes de la librairie "SCIKIT LEARN", notamment
+                    <ul>
+                        <li>HAC, qui opere les regroupements par classification hiérarchique. Le nombre de clusters est présuposé (voir les métriques pour sa recherche)</li>
+                        <li>NEURAL GAS, utilise le principe des cartes auto-adaptatives</li>
+                        <li>HDBSCAN, utilise la densité pour trouver les clusters. C'est une évolution de DBSCAN, capable de traiter des densités différentes sur un même jeu de données</li>
+                        <li>MEANSHIFT, procéde par décomposition spectrale des données pour opérer les regroupements</li>
+                    </ul>
+                    </p>
+                    <p>
+                        L'usage de REDUCE permet de remplacer les données par le barycentre de chaque clusters.
+                        Les nouvelles données obtenues sont téléchargeables dans un fichier CSV
+                    </p>
+                </div>
+            </div>
+        </div>
+
 
 	</div>
 		
