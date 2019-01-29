@@ -1,8 +1,8 @@
 {
   "name": "3DH",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "private": true,
-  "description": "3D Graph & Data Analysis",
+  "description": "3D & Data Analysis",
   "license": "MIT",
   "root_api": "https://ss.shifumix.com:5000",
   "keywords": [
