@@ -26,7 +26,7 @@
     "deploy": "push-dir --dir=docs --branch=master --cleanup"
   },
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "es-cookie": "^1.2.0",
     "guid-typescript": "^1.0.9",
     "https": "^1.0.0",
